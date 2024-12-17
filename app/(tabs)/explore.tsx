@@ -1,13 +1,77 @@
 import { StyleSheet, Image, Platform } from 'react-native';
-
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { useEffect, useState } from 'react';
+import * as SQLite from 'expo-sqlite';
+import * as FileSystem from 'expo-file-system';
+import { Asset } from 'expo-asset';
+const DATABASE_NAME = 'mydb.db';
+
+const loadDatabase = async () => {
+  const dbPath = `${FileSystem.documentDirectory}SQLite/${DATABASE_NAME}`;
+
+  // Controlla se il database esiste già
+  const dbExists = await FileSystem.getInfoAsync(dbPath);
+
+  if (!dbExists.exists) {
+    // Copia il file .db dalla cartella assets alla sandbox dell'app
+    console.log('Copia del database preesistente...');
+    const asset = Asset.fromModule(require('../../assets/mydb.db'));
+    await asset.downloadAsync();
+
+    await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}SQLite`, {
+      intermediates: true,
+    });
+
+    await FileSystem.copyAsync({
+      from: asset.localUri!,
+      to: dbPath,
+    });
+    console.log('Database copiato con successo!');
+  } else {
+    console.log('Database già esistente.');
+  }
+
+  // Apri il database
+  const db = SQLite.openDatabaseSync(DATABASE_NAME);
+  console.log('Database aperto:', DATABASE_NAME);
+
+  return db;
+};
+
+// Carica e inizializza il database
+loadDatabase();
+
 
 export default function TabTwoScreen() {
+  const [data, setData] = useState<string[]>([]);
+  
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        console.log('fetching data');
+        const db = await SQLite.openDatabaseAsync(DATABASE_NAME);
+        console.log('db opened');
+        // voglio stampare la lista delle tabelle presenti nel db
+        console.log(db.databasePath)
+        
+        const allUsers = await db.getAllAsync('SELECT username FROM users');
+        console.log('all users fetched');
+        console.log(allUsers);
+        
+        setData(allUsers.map((user: { username: string }) => user.username));
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    
+    fetchData();
+  }, []);
+  
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
@@ -92,6 +156,9 @@ export default function TabTwoScreen() {
           ),
         })}
       </Collapsible>
+      <ThemedText>
+        user data: {data.join(', ')}
+      </ThemedText>
     </ParallaxScrollView>
   );
 }
