@@ -7,6 +7,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import QuizScreen from '../pages/QuizScreen'; // Nota il percorso assoluto per `QuizScreen`
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -34,10 +35,12 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="profile"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Profile',
+          tabBarIcon: ({ color }: { color: string }) => (
+            <IconSymbol size={28} name="person.fill" color={color} />
+          ),
         }}
       />
       <Tabs.Screen
