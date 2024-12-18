@@ -13,7 +13,10 @@ const MAPPING = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
-} as Partial<
+  'list.number': 'list-ol',
+  'person.crop.circle' : 'account-circle',
+
+} as unknown as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
     React.ComponentProps<typeof MaterialIcons>['name']
