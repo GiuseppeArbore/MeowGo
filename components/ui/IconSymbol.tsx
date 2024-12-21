@@ -15,6 +15,7 @@ const MAPPING = {
   'chevron.right': 'chevron-right',
   'list.number': 'list-ol',
   'person.crop.circle' : 'account-circle',
+  'line.3.horizontal.decrease' : 'filter',
 
 } as unknown as Partial<
   Record<

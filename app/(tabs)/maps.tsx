@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { SearchBar } from '@rneui/themed';
+import { StyleSheet, View, Text, TouchableOpacity, useColorScheme, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Linking } from 'react-native';
+import { Link } from 'expo-router';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import { IconSymbol } from '@/components/ui/IconSymbol';
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
     segmentedControlContainer: {
-        marginTop: 50,
+        marginTop: 10,
         marginHorizontal: 10,
+    },
+    filterSearchContainer: {
+        marginTop: 50,
+        marginBottom: 1,
     },
     mapContainer: {
         flex: 1,
@@ -22,13 +27,17 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         flex: 1,
+        marginTop: 10,
         justifyContent: 'center',
         alignItems: 'center',
     },
     listText: {
         fontSize: 18,
-        fontWeight: 'bold'
-    }
+        fontWeight: 'bold',
+    },
+    filterButton: {
+        marginLeft: 10,
+    },
 });
 
 const TabThreeScreen: React.FC = () => {
@@ -40,45 +49,49 @@ const TabThreeScreen: React.FC = () => {
         Linking.openURL(url).catch(err => console.error('Error:', err));
     };
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.segmentedControlContainer}>
-                <SearchBar
-                    placeholder="Turin"
-                    platform='ios'
-                />
-                <SegmentedControl
-                    values={['Lista', 'Mappa']}
-                    selectedIndex={selectedView}
-                    onChange={(event: { nativeEvent: { selectedSegmentIndex: React.SetStateAction<number>; }; }) => setSelectedView(event.nativeEvent.selectedSegmentIndex)}
-                />
-            </View>
+    const colorScheme = useColorScheme();
 
-            {selectedView === 0 ? (
-                <View style={styles.listContainer}>
-                    <Text style={styles.listText}>Qui ci sarà la lista!</Text>
+    return (
+            <View style={styles.container}>
+                <View style={styles.filterSearchContainer}>
+                    <TouchableOpacity style={styles.filterButton}>
+                        <Link href="/filter">
+                            <IconSymbol size={28} name="line.3.horizontal.decrease" color={colorScheme === 'dark' ? '#FFF' : '#000'} />
+                        </Link>
+                    </TouchableOpacity>
                 </View>
-            ) : (
-                <View style={styles.mapContainer}>
-                    <MapView
-                        style={styles.map}
-                        initialRegion={{
-                            latitude: 37.7749, // Initial latitude
-                            longitude: -122.4194, // Initial longitude
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
-                        }}
-                    >
-                        <Marker
-                            coordinate={{ latitude: 37.7749, longitude: -122.4194 }}
-                            title="Posizione"
-                            description="Clicca per indicazioni"
-                            onCalloutPress={() => openGoogleMaps(37.7749, -122.4194)}
-                        />
-                    </MapView>
+                <View style={styles.segmentedControlContainer}>
+                    <SegmentedControl
+                        values={['Lista', 'Mappa']}
+                        selectedIndex={selectedView}
+                        onChange={(event: { nativeEvent: { selectedSegmentIndex: React.SetStateAction<number>; }; }) => setSelectedView(event.nativeEvent.selectedSegmentIndex)}
+                    />
                 </View>
-        )}
-        </View>
+                {selectedView === 0 ? (
+                    <View style={styles.listContainer}>
+                        <Text style={styles.listText}>Qui ci sarà la lista!</Text>
+                    </View>
+                ) : (
+                    <View style={styles.mapContainer}>
+                        <MapView
+                            style={styles.map}
+                            initialRegion={{
+                                latitude: 37.7749, // Initial latitude
+                                longitude: -122.4194, // Initial longitude
+                                latitudeDelta: 0.0922,
+                                longitudeDelta: 0.0421,
+                            }}
+                        >
+                            <Marker
+                                coordinate={{ latitude: 37.7749, longitude: -122.4194 }}
+                                title="Posizione"
+                                description="Clicca per indicazioni"
+                                onCalloutPress={() => openGoogleMaps(37.7749, -122.4194)}
+                            />
+                        </MapView>
+                    </View>
+                )}
+            </View>
     );
 };
 
