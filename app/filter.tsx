@@ -37,7 +37,11 @@ export default function Filter() {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
+    <TouchableWithoutFeedback onPress={() => {
+      if (!showPickerLocation && !showPickerEventType) {
+        navigation.goBack();
+      }
+    }}>
       <View style={styles.overlay}>
 
         <View style={styles.modal}>
@@ -77,10 +81,10 @@ export default function Filter() {
                 }}
               >
                 <Picker.Item label="Select..." value="Select..." />
-                <Picker.Item label="Fun" value="Fun" />
-                <Picker.Item label="Karaoke" value="Karaoke" />
-                <Picker.Item label="Run" value="Run" />
-                <Picker.Item label="Karate" value="Karate" />
+                <Picker.Item label="Adventure" value="Run" />
+                <Picker.Item label="Cultural" value="Karate" />
+                <Picker.Item label="Social" value="Fun" />
+                <Picker.Item label="Sport" value="Karaoke" />
               </Picker>
             )}
           </View>
