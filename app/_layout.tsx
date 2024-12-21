@@ -4,7 +4,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
-import * as SQLite from 'expo-sqlite';
+import QuizScreen from './pages/QuizScreen';import * as SQLite from 'expo-sqlite';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { SQLiteProvider, useSQLiteContext, type SQLiteDatabase } from 'expo-sqlite';
 import { useEffect, useState, Suspense } from 'react';
@@ -47,7 +47,8 @@ export default function RootLayout() {
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
-          </Stack>
+            <Stack.Screen name="filter" options={{ presentation: 'transparentModal', headerShown: false }} />
+      </Stack>
           <StatusBar style="auto" />
         </SQLiteProvider>
       </Suspense>
