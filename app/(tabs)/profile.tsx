@@ -106,85 +106,107 @@ const ProfileScreen: React.FC = () => {
     setModalVisible(false);
   };
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-        
-        <View style={styles.header}>
+    <View style={{ flex: 1 }}>
+      {/* Header posizionato fuori dallo ScrollView */}
+      <View style={styles.header}>
+      <Text style={styles.title}>Profile</Text>
         <TouchableOpacity style={styles.taralliContainer} onPress={showModal}>
           <Image
-            source={require('@/assets/images/tarallo.png')} // o Asset.fromModule(require('path-to-your-image'))
+            source={require('@/assets/images/tarallo.png')}
             style={styles.taralloIcon}
           />
           <View style={styles.tarallo}>
             <Text style={styles.taralloText}>{taralli}</Text>
           </View>
         </TouchableOpacity>
-        <Text style={styles.title}>Profile</Text>
-      </View>
-  
-      <View style={styles.formContainer}>
-        <Text style={styles.label}>First Name</Text>
-        <Text style={styles.value}>{firstName}</Text>
-  
-        <Text style={styles.label}>Last Name</Text>
-        <Text style={styles.value}>{lastName}</Text>
-  
-        <Text style={styles.label}>Date of Birth</Text>
-        <Text style={styles.value}>{dateOfBirth}</Text>
-        {localLegends.length > 0 ? (
-          <>
-            <Text style={styles.label}>Local Legends Cities</Text>
-            {localLegends.map((city, index) => (
-              <View key={index} style={styles.legendItem}>
-                {/* Personalizza l'icona per ogni città */}
-                {city === 'Bari' ? (
-                  <FontAwesome name="anchor" style = {styles.iconCity} color={styles.iconColor.color} /> // Esempio di icona del mare
-                ) : city === 'Torino' ? (
-                  <FontAwesome name="cloud" style = {styles.iconCity} color={styles.iconColor.color} /> // Esempio di icona di una zuppa
-                ) : (
-                  <FontAwesome name="map-marker" style = {styles.iconCity} color={styles.iconColor.color} /> // Icona di default per altre città
-                )}
-                <Text style={styles.valueCity}>{city}</Text>
-              </View>
-            ))}
-          </>
-        ) : (
-          <Text style={styles.noLegendMessage}>You're not a Local Legend yet</Text>
-        )}
-      </View>
-  
-      <View style={styles.buttonContainer} onTouchEnd={() => router.push('../pages/QuizScreen')}>
-        {localLegends.length > 0 ? ( 
-          <Text style={styles.button} >Become a Local Legend
-    {'\n'}for another city</Text>
-        ) : (
-          <Text style={styles.button}>Become a Local Legend</Text>
-        )}
         
       </View>
+  
+      {/* Contenitore scrollabile */}
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.formContainer}>
+          <Text style={styles.label}>First Name</Text>
+          <Text style={styles.value}>{firstName}</Text>
+  
+          <Text style={styles.label}>Last Name</Text>
+          <Text style={styles.value}>{lastName}</Text>
+  
+          <Text style={styles.label}>Date of Birth</Text>
+          <Text style={styles.value}>{dateOfBirth}</Text>
+  
+          {localLegends.length > 0 ? (
+            <>
+              <Text style={styles.label}>Local Legends Cities</Text>
+              {localLegends.map((city, index) => (
+                <View key={index} style={styles.legendItem}>
+                  {city === 'Bari' ? (
+                    <FontAwesome
+                      name="anchor"
+                      style={styles.iconCity}
+                      color={styles.iconColor.color}
+                    />
+                  ) : city === 'Torino' ? (
+                    <FontAwesome
+                      name="cloud"
+                      style={styles.iconCity}
+                      color={styles.iconColor.color}
+                    />
+                  ) : (
+                    <FontAwesome
+                      name="map-marker"
+                      style={styles.iconCity}
+                      color={styles.iconColor.color}
+                    />
+                  )}
+                  <Text style={styles.valueCity}>{city}</Text>
+                </View>
+              ))}
+            </>
+          ) : (
+            <Text style={styles.noLegendMessage}>
+              You're not a Local Legend yet
+            </Text>
+          )}
+        </View>
+  
+        <View
+          style={styles.buttonContainer}
+          onTouchEnd={() => router.push('../pages/QuizScreen')}
+        >
+          {localLegends.length > 0 ? (
+            <Text style={styles.button}>
+              Become a Local Legend{'\n'}for another city
+            </Text>
+          ) : (
+            <Text style={styles.button}>Become a Local Legend</Text>
+          )}
+        </View>
+      </ScrollView>
+  
+      {/* Modal */}
       <Modal
         transparent={true}
         animationType="slide"
         visible={modalVisible}
-        onRequestClose={hideModal} // Funzione per chiudere il Modal
+        onRequestClose={hideModal}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-          <TextInput
-            style={styles.input}
-            editable={false} // Disabilita la modifica dell'input
-            multiline={true} // Permette il salto di riga se necessario
-            value="I taralli sono una moneta che puoi collezionare tramite la partecipazione agli eventi.
-            Ogni evento a cui partecipi ottieni un tarallo.
-            Più taralli hai, più amici avrai!"
-          />
+            <TextInput
+              style={styles.input}
+              editable={false}
+              multiline={true}
+              value="I taralli sono una moneta che puoi collezionare tramite la partecipazione agli eventi.
+              Ogni evento a cui partecipi ottieni un tarallo.
+              Più taralli hai, più amici avrai!"
+            />
             <TouchableOpacity style={styles.closeButton} onPress={hideModal}>
               <Text style={styles.closeButtonText}>Chiudi</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-
-    </ScrollView>
+    </View>
   );
   
 };
@@ -195,18 +217,23 @@ const createStyles = (isDarkMode: boolean, contentPaddingTop: number, headerHeig
   StyleSheet.create({
     container: {
       flexGrow: 1,
-      backgroundColor: isDarkMode ? '#000' : '#A1CEDC', // Colore dinamico
+      backgroundColor: isDarkMode ? '#000' : '#A1CEDC',
       padding: 16,
-      marginBottom: 20,
-      paddingTop: contentPaddingTop,
+      marginTop: headerHeight, // Aggiungi margine per lasciare spazio all'heade
     },
     header: {
       height: headerHeight,
       alignItems: 'center',
       justifyContent: 'center',
-      marginTop: headerHeight * 0.2, // Aggiunto margine sopra l'intestazione
-      marginBottom: 10,
       flexDirection: 'row',
+      position: 'absolute', // Posizionato sopra il contenuto principale
+      top: 0, // Allineato alla parte superiore
+      left: 0,
+      right: 0,
+      backgroundColor: isDarkMode ? '#000' : '#A1CEDC', // Sfondo dinamico
+      zIndex: 10, // Garantisce che l'header rimanga sopra
+      paddingVertical: 10, // Margine interno verticale
+      textAlign: 'center', // Allineamento del titolo
     },
     title: {
       fontSize: 28,
@@ -215,6 +242,7 @@ const createStyles = (isDarkMode: boolean, contentPaddingTop: number, headerHeig
       alignItems: 'center', // Nuova proprietà per centrare la scritta
       justifyContent: 'center', // Nuova proprietà per centrare la scritta
       marginLeft: 10, // Aggiunto margine a sinistra del titolo
+      marginTop: headerHeight*0.5, // Aggiunto margine sopra il titolo
     },
     taralloIcon: {
       width: 20,
@@ -301,8 +329,9 @@ const createStyles = (isDarkMode: boolean, contentPaddingTop: number, headerHeig
       shadowOpacity: 0.1, // Opacità della ombra
       shadowRadius: 4, // Raggio della ombra
       elevation: 3, // Elevazione per la ombra
-      marginTop: 1, // Un po' di spazio sopra l'icona e il numero
+      marginTop: headerHeight*0.5, // Un po' di spazio sopra l'icona e il numero
       height: 40, // Altezza fissa per il container
+      marginLeft: 10, // Aggiunto margine a sinistra
     },
     buttonContainer: {
       backgroundColor: isDarkMode ? '#002244' : '#002244', // Colore dinamico
