@@ -59,7 +59,7 @@ export default function TabTwoScreen() {
         // voglio stampare la lista delle tabelle presenti nel db
         console.log(db.databasePath)
         
-        const allUsers = await db.getAllAsync('SELECT username FROM users');
+        const allUsers: { username: string }[] = await db.getAllAsync('SELECT username FROM users');
         console.log('all users fetched');
         console.log(allUsers);
         
