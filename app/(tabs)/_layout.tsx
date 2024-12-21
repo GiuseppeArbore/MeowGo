@@ -6,6 +6,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import QuizScreen from '../pages/QuizScreen'; // Nota il percorso assoluto per `QuizScreen`
 import { Stack } from 'expo-router';
 
 export default function TabLayout() {
@@ -41,10 +42,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="profile"
         options={{
           title: 'Account',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.crop.circle" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="list.number" color={color} />,
         }}
       />
     </Tabs>
