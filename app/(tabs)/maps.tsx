@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, useColorScheme, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
@@ -5,6 +6,7 @@ import { Linking } from 'react-native';
 import { Link } from 'expo-router';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { Login_form } from '@/components/Login_form';
 
 const styles = StyleSheet.create({
     container: {
@@ -53,6 +55,7 @@ const TabThreeScreen: React.FC = () => {
 
     return (
             <View style={styles.container}>
+                <Login_form />
                 <View style={styles.filterSearchContainer}>
                     <TouchableOpacity style={styles.filterButton}>
                         <Link href="/filter">
@@ -96,5 +99,3 @@ const TabThreeScreen: React.FC = () => {
 };
 
 export default TabThreeScreen;
-
-
