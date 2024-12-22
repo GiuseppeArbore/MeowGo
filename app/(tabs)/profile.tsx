@@ -5,7 +5,7 @@ import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 import { useRouter } from 'expo-router'; // Importa il router
 import { FontAwesome } from '@expo/vector-icons'; // Importa l'icona FontAwesome
-const DATABASE_NAME = 'test.db';
+import { DATABASE_NAME } from '../../utils/database';
 
 const loadDatabase = async () => {
   const dbPath = `${FileSystem.documentDirectory}SQLite/${DATABASE_NAME}`;

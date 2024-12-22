@@ -11,7 +11,8 @@ import {
 import * as SQLite from 'expo-sqlite';
 import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
-const DATABASE_NAME = 'mydb.db';
+
+import { DATABASE_NAME } from '../utils/database';
 
 const loadDatabase = async () => {
   const dbPath = `${FileSystem.documentDirectory}SQLite/${DATABASE_NAME}`;
