@@ -7,13 +7,27 @@ import 'react-native-reanimated';
 import QuizScreen from './pages/QuizScreen'; import * as SQLite from 'expo-sqlite';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { SQLiteProvider, useSQLiteContext, type SQLiteDatabase } from 'expo-sqlite';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState, Suspense, useContext, createContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import { DATABASE_NAME } from '../utils/database';
 import { Event } from '../components/models/event';
 import { User } from '../components/models/user';
 
+export const AppContext = createContext<{
+  allEvents: Event[];
+  allUsers: User[];
+  myEvents: String[];
+} | null>(null);
+
+// Exportiamo un hook per semplificare l'uso del contesto
+export const useAppContext = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useAppContext must be used within an AppContextProvider');
+  }
+  return context;
+};
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -31,11 +45,17 @@ export default function RootLayout() {
     async function fetchData() {
       const db = await SQLite.openDatabaseAsync(DATABASE_NAME);
       const users = await db.getAllAsync('SELECT * FROM users');
+      const events = await db.getAllAsync('SELECT * FROM events');
+      setAllUsers(users.map((user: any) => new User(user.username, user.password, user.name, user.surname, user.birthdate)));
+      setAllEvents(events.map((event: any) => new Event(event.name, event.location, event.latitude, event.longitude, event.date, event.description, event.hour, event.max_people, event.creator, event.place, event.local_legend_here, event.secred_code, event.type, event.string)));
       /*
-     
+      setAllUsers(users.map((user: any) => new User(user.username, user.password, user.name, user.surname, user.birthdate)));
+      setAllEvents((await db.getAllAsync('SELECT * FROM events')).map((event: any) => new Event(event.name, event.location, event.date, event.location, event.participants, event.maxParticipants, event.creator, event.description, event.category, event.image, event.price, event.duration, event.latitude, event.longitude)));
       console.log(allUsers);
       console.log(allEvents);
       */
+      console.log("Utenti che passo per l'app", allUsers);
+      console.log("Eventi che passo per l'app", allEvents);
     }
     fetchData();
   }, []);
@@ -53,22 +73,29 @@ export default function RootLayout() {
     return null;  //capire se serve
   }
 
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Suspense fallback={<View style={StyleSheet.absoluteFill}><Text>Loading...</Text></View>}>
-        <SQLiteProvider databaseName={DATABASE_NAME} onInit={migrateDbIfNeeded} useSuspense >
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-            <Stack.Screen name="filter" options={{ presentation: 'transparentModal', headerShown: false }} />
-          </Stack>
-          <StatusBar style="auto" />
-        </SQLiteProvider>
-      </Suspense>
-    </ThemeProvider>
+    <AppContext.Provider value={{ allEvents, allUsers, myEvents }}>
+
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Suspense fallback={<View style={StyleSheet.absoluteFill}><Text>Loading...</Text></View>}>
+          <SQLiteProvider databaseName={DATABASE_NAME} onInit={migrateDbIfNeeded} useSuspense >
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} initialParams={{ allEvents, allUsers, myEvents }}
+              />
+
+              <Stack.Screen name="+not-found" />
+              <Stack.Screen name="filter" options={{ presentation: 'transparentModal', headerShown: false }} />
+            </Stack>
+            <StatusBar style="auto" />
+          </SQLiteProvider>
+        </Suspense>
+      </ThemeProvider>
+    </AppContext.Provider>
+
   );
 }
+/*initialParams={ { allEvents: allEvents, allUsers: allUsers, myEvents:myEvents}}/>*/
+
 
 
 async function migrateDbIfNeeded(db: SQLiteDatabase) {
@@ -96,25 +123,25 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
 
   try {
     const result = await db.getAllAsync<{ name: string }>("SELECT name FROM sqlite_master WHERE type='table';");
+    console.log('Your Tables are:', result);
     result.forEach((table) => {
-      console.log('TABLE:', table.name);
       /* se volete stampare i tipi di ogni colonna
       const columns =
         db.getAllAsync<{ name: string, type: string }>(`PRAGMA table_info(${table.name});`).then(columns => {
+          console.log(`Columns of table ${table.name}:`);
           columns.forEach(column => {
             console.log(`Column: ${column.name}, Type: ${column.type}`);
           });
         });
         */
-      const values = db.getAllAsync(`SELECT * FROM ${table.name};`).then(values => {
+      db.getAllAsync(`SELECT * FROM ${table.name};`).then(values => {
         values.forEach(value => {
-          console.log('Value:', value);
+          console.log(`Table ${table.name} Value:`, value);
         });
       });
 
 
     });
-    // Puoi accedere a result per ottenere un array con i nomi delle tabelle
   } catch (error) {
     console.error('Error listing tables:', error);
   }
