@@ -11,12 +11,18 @@ import { useEffect, useState, Suspense } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import { DATABASE_NAME } from '../utils/database';
+import { Event } from '../components/models/event';
+import { User } from '../components/models/user';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [myEvents, setMyEvents] = useState<String[]>([]); //id degli eventi a cui partecipo
+
 
   const colorScheme = useColorScheme();
 
@@ -24,10 +30,12 @@ export default function RootLayout() {
   useEffect(() => {
     async function fetchData() {
       const db = await SQLite.openDatabaseAsync(DATABASE_NAME);
-      const allUsers = await db.getAllAsync('SELECT * FROM users'); // da passare in giro
-      const allEvents = await db.getAllAsync('SELECT * FROM events'); // da passare in giro
+      const users = await db.getAllAsync('SELECT * FROM users');
+      /*
+     
       console.log(allUsers);
       console.log(allEvents);
+      */
     }
     fetchData();
   }, []);
@@ -70,7 +78,7 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
   if (currentDbVersion >= DATABASE_VERSION) {
     return;
   }
-  if (currentDbVersion === 1) {
+  if (currentDbVersion === 0) {
     await db.execAsync(`
       PRAGMA journal_mode = 'wal';
       CREATE TABLE todos (id INTEGER PRIMARY KEY NOT NULL, value TEXT NOT NULL, intValue INTEGER);
@@ -90,14 +98,18 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
     const result = await db.getAllAsync<{ name: string }>("SELECT name FROM sqlite_master WHERE type='table';");
     result.forEach((table) => {
       console.log('TABLE:', table.name);
+      /* se volete stampare i tipi di ogni colonna
       const columns =
         db.getAllAsync<{ name: string, type: string }>(`PRAGMA table_info(${table.name});`).then(columns => {
           columns.forEach(column => {
             console.log(`Column: ${column.name}, Type: ${column.type}`);
           });
         });
+        */
       const values = db.getAllAsync(`SELECT * FROM ${table.name};`).then(values => {
-        console.log('Values:', values);
+        values.forEach(value => {
+          console.log('Value:', value);
+        });
       });
 
 
