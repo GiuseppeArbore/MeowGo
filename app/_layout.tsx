@@ -10,7 +10,10 @@ import { SQLiteProvider, useSQLiteContext, type SQLiteDatabase } from 'expo-sqli
 import { useEffect, useState, Suspense } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-
+export type RootStackParamList = {
+  Home: undefined;
+  search: undefined;
+};
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -48,6 +51,7 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
             <Stack.Screen name="filter" options={{ presentation: 'transparentModal', headerShown: false }} />
+            <Stack.Screen name="search" options={{ presentation: 'transparentModal', headerShown: false }} />
       </Stack>
           <StatusBar style="auto" />
         </SQLiteProvider>

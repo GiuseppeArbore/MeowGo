@@ -5,6 +5,7 @@ import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 import { useRouter } from 'expo-router'; // Importa il router
 import { FontAwesome } from '@expo/vector-icons'; // Importa l'icona FontAwesome
+import DateTimePicker from '@react-native-community/datetimepicker';
 const DATABASE_NAME = 'test.db';
 
 const loadDatabase = async () => {
@@ -64,6 +65,13 @@ const ProfileScreen: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [inputText, setInputText] = useState('');
 
+  const [selectedDate, setSelectedDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+
+    const handleDatePicker = () => {
+        setShowDatePicker(true);
+      };
+
   const screenHeight = Dimensions.get('window').height;
   const headerHeight = screenHeight * 0.1; // Adjust as necessary for the notification bar
   const contentPaddingTop = screenHeight * 0.01; // Adjust as necessary for header gap
@@ -121,6 +129,7 @@ const ProfileScreen: React.FC = () => {
         </TouchableOpacity>
         
       </View>
+
   
       {/* Contenitore scrollabile */}
       <ScrollView contentContainerStyle={styles.container}>
@@ -133,6 +142,22 @@ const ProfileScreen: React.FC = () => {
   
           <Text style={styles.label}>Date of Birth</Text>
           <Text style={styles.value}>{dateOfBirth}</Text>
+
+          <View >
+                    <Text style={styles.label}>Date:</Text>
+                    <TouchableOpacity onPress={handleDatePicker}>
+                        <Text style={styles.input}>
+                            {selectedDate.toLocaleDateString()}
+                        </Text>
+                    </TouchableOpacity>
+                    {showDatePicker && (
+                        <DateTimePicker
+                            value={selectedDate}
+                            mode="date"
+                            display = "default" //for iOS style
+                        />
+                    )}
+      </View>
   
           {localLegends.length > 0 ? (
             <>

@@ -13,9 +13,13 @@ const MAPPING = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
-  'list.number': 'list-ol',
+  'list.number': 'format-list-numbered',
   'person.crop.circle' : 'account-circle',
-  'line.3.horizontal.decrease' : 'filter',
+  'line.3.horizontal.decrease' : 'filter-list',
+  'magnifyingglass' : 'search',
+  'calendar' : 'calendar-month',
+  'clock' : 'access-time',
+  'location': 'location-on'
 
 } as unknown as Partial<
   Record<
