@@ -7,6 +7,7 @@ import { Picker } from '@react-native-picker/picker';
 
 export default function Filter() {
     const colorScheme = useColorScheme();
+    const isDarkMode = colorScheme === 'dark';
     const navigation = useNavigation();
     const [selectedCity, setSelectedCity] = useState('Turin');
     const [showPickerAvailableCities, setShowPickerAvailableCities] = useState(false);
@@ -14,6 +15,108 @@ export default function Filter() {
     const [selectedTime, setSelectedTime] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
+
+    const colors = {
+        background: isDarkMode ? '#1C1C1C' : '#FFFFFF',
+        text: isDarkMode ? '#FFFFFF' : '#000000',
+        inputBackground: isDarkMode ? '#2E2E2E' : '#F5F5F5',
+        buttonBackground: isDarkMode ? '#2E2E2E' : '#E0E0E0',
+        buttonText: isDarkMode ? '#FFFFFF' : '#000000',
+      };
+
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 20,
+        },
+        overlay: {
+            flex: 1,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            justifyContent: 'center',
+        },
+        modal: {
+            alignItems: 'center',
+            backgroundColor: colors.background,
+            borderRadius: 20,
+            paddingTop: 20,
+            paddingBottom: 0, // Tolto padding sotto, bottoni faranno il bordo
+            marginHorizontal: 20,
+            maxHeight: '70%', // Massimo metà schermo
+        },
+        buttonContainer: {
+            flexDirection: 'row',
+            borderTopColor: '#ddd',
+            marginTop: 10,
+        },
+        button: {
+            flex: 1,
+            paddingVertical: 15,
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        cancelButton: {
+            backgroundColor: colors.buttonBackground,
+            borderBottomLeftRadius: 20,
+            borderRightWidth: 0.5,
+            borderTopWidth: 1,
+            borderColor: '#ddd',
+        },
+        searchButton: {
+            backgroundColor: colors.buttonBackground,
+            borderBottomRightRadius: 20,
+            borderLeftWidth: 0.5,
+            borderTopWidth: 1,
+            borderColor: '#ddd',
+        },
+        buttonText: {
+            fontSize: 16,
+            color: colors.buttonText,
+        },
+        searchButtonText: {
+            fontWeight: 'bold',
+        },
+        headerText: {
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginBottom: 20,
+            textAlign: 'center',
+            color: colors.text,
+        },
+        card: {
+            width: '90%',
+            minHeight: 50,
+            justifyContent: 'center',
+            backgroundColor: colors.inputBackground,
+            borderWidth: 1,
+            borderColor: '#ddd',
+            padding: 15,
+            marginBottom: 10,
+            elevation: 3, // Ombra per Android
+            shadowColor: '#000', // Ombra per iOS
+            shadowOffset: { width: 0, height: 2 },
+            borderRadius: 25,
+            shadowOpacity: 0.2,
+            shadowRadius: 4,
+        },
+        filterRow: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+        },
+        searchLabel: {
+            flex: 1,
+            fontSize: 16,
+            color: colors.text,
+        },
+        clickableArea: {
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+        },
+    });
+
 
     // Funzioni per la gestione dei picker
     const toggleCityPicker = () => {
@@ -101,7 +204,7 @@ export default function Filter() {
                             mode="date"
                             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                             onChange={(event, date) => {
-                                setShowDatePicker(false)
+                                if (Platform.OS === 'android') setShowDatePicker(false)
                                 if (date) setSelectedDate(date);
                             }}
                         />
@@ -127,7 +230,7 @@ export default function Filter() {
                             mode="time"
                             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                             onChange={(event, time) => {
-                                setShowTimePicker(false);
+                                if (Platform.OS === 'android') setShowTimePicker(false);
                                 if (time) setSelectedTime(time);
                             }}
                         />
@@ -148,98 +251,3 @@ export default function Filter() {
         </TouchableWithoutFeedback >
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
-    },
-    overlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        justifyContent: 'center',
-    },
-    modal: {
-        alignItems: 'center',
-        backgroundColor: 'white',
-        borderRadius: 20,
-        paddingTop: 20,
-        paddingBottom: 0, // Tolto padding sotto, bottoni faranno il bordo
-        marginHorizontal: 20,
-        maxHeight: '70%', // Massimo metà schermo
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        borderTopColor: '#ddd',
-        marginTop: 10,
-    },
-    button: {
-        flex: 1,
-        paddingVertical: 15,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    cancelButton: {
-        backgroundColor: '#f5f5f5',
-        borderBottomLeftRadius: 20,
-        borderRightWidth: 0.5,
-        borderTopWidth: 1,
-        borderColor: '#ddd',
-    },
-    searchButton: {
-        backgroundColor: '#f5f5f5',
-        borderBottomRightRadius: 20,
-        borderLeftWidth: 0.5,
-        borderTopWidth: 1,
-        borderColor: '#ddd',
-    },
-    buttonText: {
-        fontSize: 16,
-        color: '#000',
-    },
-    searchButtonText: {
-        fontWeight: 'bold',
-    },
-    headerText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    card: {
-        width: '90%',
-        minHeight: 50,
-        justifyContent: 'center',
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        borderColor: '#ddd',
-        padding: 15,
-        marginBottom: 10,
-        elevation: 3, // Ombra per Android
-        shadowColor: '#000', // Ombra per iOS
-        shadowOffset: { width: 0, height: 2 },
-        borderRadius: 25,
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-    },
-    filterRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    searchLabel: {
-        flex: 1,
-        fontSize: 16,
-    },
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    clickableArea: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-});

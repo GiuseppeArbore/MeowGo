@@ -15,6 +15,7 @@ const TabThreeScreen: React.FC = () => {
     const [city, setCity] = useState('Torino'); // Stato per la città
     const [dateTime, setDateTime] = useState('Today - 20:00'); // Stato per ora e giorno
     const colorScheme = useColorScheme();
+    const isDarkMode = colorScheme === 'dark';
 
     const openGoogleMaps = (latitude: number, longitude: number) => {
         const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
@@ -59,7 +60,7 @@ const TabThreeScreen: React.FC = () => {
         filterButton: {
             width: 40,
             height: 40,
-            backgroundColor: '#e3e3e4',
+            backgroundColor: isDarkMode ? '#333' : '#e3e3e4',
             borderRadius: 20,
             marginLeft: 10,
             justifyContent: 'center',
@@ -69,7 +70,7 @@ const TabThreeScreen: React.FC = () => {
             flex: 1,
             flexDirection: 'row',
             alignItems: 'center',
-            backgroundColor: colorScheme === 'dark' ? '#333' : '#e3e3e4',
+            backgroundColor: isDarkMode ? '#333' : '#e3e3e4',
             borderRadius: 20,
             paddingHorizontal: 10,
             marginLeft: 10,
@@ -79,13 +80,13 @@ const TabThreeScreen: React.FC = () => {
             fontSize: 16,
             fontWeight: 'bold',
             marginRight: 5,
-            color: colorScheme === 'dark' ? '#FFF' : '#000',
+            color: isDarkMode ? '#FFF' : '#000',
         },
         dateTimeText: {
             flex: 1,
             fontSize: 14,
             textAlign: 'center',
-            color: colorScheme === 'dark' ? '#FFF' : '#000',
+            color: isDarkMode ? '#FFF' : '#000',
         }, 
     });
 
@@ -99,13 +100,13 @@ const TabThreeScreen: React.FC = () => {
                     <Text style={styles.cityText}>{city}</Text>
                     <Text style={styles.dateTimeText}>{dateTime}</Text>
                     <Link href="/search">
-                        <IconSymbol size={20} name="magnifyingglass" color={colorScheme === 'dark' ? '#FFF' : '#000'} />
+                        <IconSymbol size={20} name="magnifyingglass" color={isDarkMode ? '#FFF' : '#000'} />
                     </Link>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.filterButton}>
                     <Link href="/filter">
-                        <IconSymbol size={28} name="line.3.horizontal.decrease" color={colorScheme === 'dark' ? '#FFF' : '#000'} />
+                        <IconSymbol size={28} name="line.3.horizontal.decrease" color={isDarkMode ? '#FFF' : '#000'} />
                     </Link>
                 </TouchableOpacity>
 
