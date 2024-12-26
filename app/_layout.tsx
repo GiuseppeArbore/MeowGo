@@ -43,10 +43,7 @@ export default function RootLayout() {
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [myEvents, setMyEvents] = useState<String[]>([]); //id degli eventi a cui partecipo
   const [db, setDb] = useState<SQLite.SQLiteDatabase | undefined>(undefined);
-  const [user, setUser] = useState<User | null>(null);
-
-  setUser(defaultUser); //TODO: per ora momentaneo, poi @Caca metti quello che si logga nel momento del login
-
+  const [user, setUser] = useState<User | null>(defaultUser); //per testare, mettere a null e aggiornale nel momento del login @Caca
 
   const colorScheme = useColorScheme();
 
