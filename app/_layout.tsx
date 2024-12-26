@@ -14,10 +14,15 @@ import { DATABASE_NAME } from '../utils/database';
 import { Event } from '../components/models/event';
 import { User } from '../components/models/user';
 
+
+const defaultUser : User = new User("Peppe", "password", "Giuseppe", "Arbore", new Date(2001, 10, 11), ["Turin", "Bari"], 10);
+
 export const AppContext = createContext<{
   allEvents: Event[];
   allUsers: User[];
   myEvents: String[];
+  user: User | null;  // null se non ancora loggato
+  db: SQLite.SQLiteDatabase;
 } | null>(null);
 
 // Exportiamo un hook per semplificare l'uso del contesto
@@ -36,6 +41,10 @@ export default function RootLayout() {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [myEvents, setMyEvents] = useState<String[]>([]); //id degli eventi a cui partecipo
+  const [db, setDb] = useState<SQLite.SQLiteDatabase | undefined>(undefined);
+  const [user, setUser] = useState<User | null>(null);
+
+  setUser(defaultUser); //TODO: per ora momentaneo, poi @Caca metti quello che si logga nel momento del login
 
 
   const colorScheme = useColorScheme();
@@ -43,7 +52,8 @@ export default function RootLayout() {
 
   useEffect(() => {
     async function fetchData() {
-      const db = await SQLite.openDatabaseAsync(DATABASE_NAME);
+      const db: SQLite.SQLiteDatabase = await SQLite.openDatabaseAsync(DATABASE_NAME);
+      setDb(db);
       const users = await db.getAllAsync('SELECT * FROM users');
       const events = await db.getAllAsync('SELECT * FROM events');
       setAllUsers(users.map((user: any) => new User(user.username, user.password, user.name, user.surname, user.birthdate)));
@@ -74,7 +84,7 @@ export default function RootLayout() {
   }
 
   return (
-    <AppContext.Provider value={{ allEvents, allUsers, myEvents }}>
+    <AppContext.Provider value={{ allEvents, allUsers, myEvents, user, db: db! }}>
 
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Suspense fallback={<View style={StyleSheet.absoluteFill}><Text>Loading...</Text></View>}>

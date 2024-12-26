@@ -7,59 +7,20 @@ import { useRouter } from 'expo-router'; // Importa il router
 import { FontAwesome } from '@expo/vector-icons'; // Importa l'icona FontAwesome
 import { DATABASE_NAME } from '../../utils/database';
 
-const loadDatabase = async () => {
-  const dbPath = `${FileSystem.documentDirectory}SQLite/${DATABASE_NAME}`;
+import { useAppContext } from '../_layout';
 
-  // Controlla se il database esiste già nella sandbox dell'app
-  const dbExists = await FileSystem.getInfoAsync(dbPath);
-  
-  if (dbExists.exists) {
-    console.log('Eliminazione del database esistente...');
-    await FileSystem.deleteAsync(dbPath, { idempotent: true });
-  }
-  
-  if (!dbExists.exists) {
-    // Copia il file .db dalla cartella assets alla sandbox dell'app
-    console.log('Copia del database preesistente...');
-    const asset = Asset.fromModule(require('../../assets/test.db'));
-    console.log('Percorso del database:', dbPath);
-    await asset.downloadAsync();
-
-    await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}SQLite`, {
-      intermediates: true,
-    });
-
-    await FileSystem.copyAsync({
-      from: asset.localUri!,
-      to: dbPath,
-    });
-    console.log('Database copiato con successo!');
-  } else {
-    console.log('Database già esistente.');
-  }
-
-  // Apri il database
-  const db = SQLite.openDatabaseSync(DATABASE_NAME);
-  console.log('Database aperto:', DATABASE_NAME);
-
-  return db;
-};
-
-// Carica e inizializza il database
-loadDatabase();
+//tolto loadDatabase perchè passo il db nello useContext
 
 
 const ProfileScreen: React.FC = () => {
+  const { db } = useAppContext();
+  const { user } = useAppContext();
+
+
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const router = useRouter();
 
-  // Stati per gestire i valori recuperati dal database
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [localLegends, setLocalLegends] = useState<string[]>([]);
-  const [taralli, setTaralli] = useState<number | null>(null);
   // Stato per la gestione della visibilità del Modal
   const [modalVisible, setModalVisible] = useState(false);
   const [inputText, setInputText] = useState('');
@@ -68,6 +29,7 @@ const ProfileScreen: React.FC = () => {
   const headerHeight = screenHeight * 0.1; // Adjust as necessary for the notification bar
   const contentPaddingTop = screenHeight * 0.01; // Adjust as necessary for header gap
 
+  /* NON DOVREBBE SERVIRCI PIU' PERCHE' PASSIAMO IL DB NELLO USECONTEXT E ANCHE L'USER
   useEffect(() => {
     async function fetchData() {
       try {
@@ -94,6 +56,7 @@ const ProfileScreen: React.FC = () => {
     
     fetchData();
   }, []);
+  */
 
   const styles = createStyles(isDarkMode, contentPaddingTop, headerHeight);
    // Funzione per mostrare il Modal
@@ -116,7 +79,7 @@ const ProfileScreen: React.FC = () => {
             style={styles.taralloIcon}
           />
           <View style={styles.tarallo}>
-            <Text style={styles.taralloText}>{taralli}</Text>
+            <Text style={styles.taralloText}>{user!.taralli}</Text>
           </View>
         </TouchableOpacity>
         
@@ -126,18 +89,18 @@ const ProfileScreen: React.FC = () => {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.formContainer}>
           <Text style={styles.label}>First Name</Text>
-          <Text style={styles.value}>{firstName}</Text>
+          <Text style={styles.value}>{user!.name}</Text>
   
           <Text style={styles.label}>Last Name</Text>
-          <Text style={styles.value}>{lastName}</Text>
+          <Text style={styles.value}>{user?.surname}</Text>
   
           <Text style={styles.label}>Date of Birth</Text>
-          <Text style={styles.value}>{dateOfBirth}</Text>
+          <Text style={styles.value}>{user!.birthdate.toString()}</Text>
   
-          {localLegends.length > 0 ? (
+          {user!.local_legend_for.length > 0 ? (
             <>
               <Text style={styles.label}>Local Legends Cities</Text>
-              {localLegends.map((city, index) => (
+              {user!.local_legend_for.map((city, index) => (
                 <View key={index} style={styles.legendItem}>
                   {city === 'Bari' ? (
                     <FontAwesome
@@ -173,7 +136,7 @@ const ProfileScreen: React.FC = () => {
           style={styles.buttonContainer}
           onTouchEnd={() => router.push('../pages/QuizScreen')}
         >
-          {localLegends.length > 0 ? (
+          {user!.local_legend_for.length > 0 ? (
             <Text style={styles.button}>
               Become a Local Legend{'\n'}for another city
             </Text>
