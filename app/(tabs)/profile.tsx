@@ -28,35 +28,6 @@ const ProfileScreen: React.FC = () => {
   const headerHeight = screenHeight * 0.1; // Adjust as necessary for the notification bar
   const contentPaddingTop = screenHeight * 0.01; // Adjust as necessary for header gap
 
-  /* NON DOVREBBE SERVIRCI PIU' PERCHE' PASSIAMO IL DB NELLO USECONTEXT E ANCHE L'USER
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        console.log('fetching data');
-        const db = await SQLite.openDatabaseAsync(DATABASE_NAME);
-        console.log('db opened');
-        // voglio stampare la lista delle tabelle presenti nel db
-        console.log(db.databasePath)
-        const user = await db.getAllAsync('SELECT * FROM users WHERE username = ?', ['Peppe']);  //Per ora prendiamo manualmente quando avremo il login lo prendiamo veramente
-        console.log('all users fetched');
-        console.log(user);
-        
-        setFirstName((user as { name: string }[]).map((user) => user.name).join(', '));
-        setLastName((user as { surname: string }[]).map((user) => user.surname).join(', '));
-        setDateOfBirth((user as { birth: string }[]).map((user) => user.birth).join(', '));
-        setTaralli((user as { taralli: number }[]).map((user) => user.taralli)[0] );
-        // Recupera le città per cui l'utente è una Local Legend
-        const cities = await db.getAllAsync('SELECT city FROM users_ll_for WHERE username = ?', [(user[0] as { username: string }).username]);
-        setLocalLegends((cities as { city: string }[]).map((item) => item.city));
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-    
-    fetchData();
-  }, []);
-  */
-
   const styles = createStyles(isDarkMode, contentPaddingTop, headerHeight);
    // Funzione per mostrare il Modal
    const showModal = () => {
@@ -194,7 +165,7 @@ const createStyles = (isDarkMode: boolean, contentPaddingTop: number, headerHeig
       right: 0,
       backgroundColor: isDarkMode ? '#000' : '#A1CEDC', // Sfondo dinamico
       zIndex: 10, // Garantisce che l'header rimanga sopra
-      paddingVertical: 10, // Margine interno verticale
+      paddingVertical: 1, // Margine interno verticale
       textAlign: 'center', // Allineamento del titolo
     },
     title: {
