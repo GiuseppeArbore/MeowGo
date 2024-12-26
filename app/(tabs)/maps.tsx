@@ -8,6 +8,15 @@ import SegmentedControl from '@react-native-segmented-control/segmented-control'
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Login_form } from '@/components/Login_form';
 
+import { DATABASE_NAME } from '../../utils/database';
+import { Event } from '../../components/models/event';
+import { User } from '../../components/models/user';
+import { RouteProp, useRoute } from '@react-navigation/native';
+
+import { useAppContext } from '../_layout'; // Percorso al file RootLayout
+
+
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -42,7 +51,15 @@ const styles = StyleSheet.create({
     },
 });
 
-const TabThreeScreen: React.FC = () => {
+
+
+
+const TabThreeScreen: React.FC = (route) => {
+
+
+    const { allEvents } = useAppContext(); // Accediamo ai dati dal contesto
+    console.log('Eventi che passo per l\'app a maps', allEvents);
+
 
     const [selectedView, setSelectedView] = useState(0);
 
