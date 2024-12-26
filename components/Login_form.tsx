@@ -16,42 +16,6 @@ import { useAppContext } from '../app/_layout';
 import { DATABASE_NAME } from '../utils/database';
 import { User } from './models/user';
 
-/* NON DOVREBBE SERVIRE PIU' PERCHE' IL DATABASE E' PASSATO DAL CONTESTO
-const loadDatabase = async () => {
-  const dbPath = `${FileSystem.documentDirectory}SQLite/${DATABASE_NAME}`;
-
-  // Controlla se il database esiste già
-  const dbExists = await FileSystem.getInfoAsync(dbPath);
-
-  if (!dbExists.exists) {
-    // Copia il file .db dalla cartella assets alla sandbox dell'app
-    console.log('Copia del database preesistente...');
-    const asset = Asset.fromModule(require('../assets/mydb.db'));
-    await asset.downloadAsync();
-
-    await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}SQLite`, {
-      intermediates: true,
-    });
-
-    await FileSystem.copyAsync({
-      from: asset.localUri!,
-      to: dbPath,
-    });
-    console.log('Database copiato con successo!');
-  } else {
-    console.log('Database già esistente.');
-  }
-
-  // Apri il database
-  const db = SQLite.openDatabaseSync(DATABASE_NAME);
-  console.log('Database aperto:', DATABASE_NAME);
-
-  return db;
-};
-
-// Carica e inizializza il database
-loadDatabase();
-*/
 
 export function Login_form() {
     const [username, setUsername] = useState('');
