@@ -12,8 +12,11 @@ import * as SQLite from 'expo-sqlite';
 import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 
+import { useAppContext } from '../app/_layout';
 import { DATABASE_NAME } from '../utils/database';
+import { User } from './models/user';
 
+/* NON DOVREBBE SERVIRE PIU' PERCHE' IL DATABASE E' PASSATO DAL CONTESTO
 const loadDatabase = async () => {
   const dbPath = `${FileSystem.documentDirectory}SQLite/${DATABASE_NAME}`;
 
@@ -48,6 +51,7 @@ const loadDatabase = async () => {
 
 // Carica e inizializza il database
 loadDatabase();
+*/
 
 export function Login_form() {
     const [username, setUsername] = useState('');
@@ -56,6 +60,9 @@ export function Login_form() {
     const [isModalVisible, setModalVisible] = useState<boolean>(true);
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
+    const { db } = useAppContext();
+    const { user, setUser } = useAppContext();
+    
     
 
     const colors = {
@@ -132,14 +139,26 @@ export function Login_form() {
     
     const handleLogin = async () => {
         try {
+            if (!db) {
+                throw new Error('Database not found');
+            } else {
+                console.log('Database opened at:', db.databasePath);
+            }
+            /*
             console.log('Opening database...');
             const db = await SQLite.openDatabaseAsync(DATABASE_NAME);
             console.log('Database opened at:', db.databasePath);
+            */
     
             const result = await db.getAllAsync('SELECT * FROM users WHERE username = ? AND password = ?', [username, password]);
-            console.log('Query result:', result);
+            console.log('Login Query result:', result);
+            const local_legend_for = await db.getAllAsync('SELECT city FROM users_ll_for WHERE username = ?', [username]);
+            console.log('Local legend for:', local_legend_for);
 
             if (result.length > 0) {
+                const userResult = result[0] as { username: string, password: string, name: string, surname: string, birthdate: string, taralli: number };
+                const ll_for = local_legend_for.map((ll: any) => ll.city); //TODO: da sistemare
+                setUser(new User(userResult.username, userResult.password, userResult.name, userResult.surname, new Date(userResult.birthdate), ll_for, userResult.taralli));
                 setModalVisible(false);
             } else {
                 setErrorMessage('Username o password errati');
@@ -184,9 +203,5 @@ export function Login_form() {
             </View>
         </Modal>
     );
-
-    
-
-
 
 }

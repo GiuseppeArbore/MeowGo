@@ -13,8 +13,7 @@ import { useAppContext } from '../_layout';
 
 
 const ProfileScreen: React.FC = () => {
-  const { db } = useAppContext();
-  const { user } = useAppContext();
+  const { db, user } = useAppContext();
 
 
   const colorScheme = useColorScheme();

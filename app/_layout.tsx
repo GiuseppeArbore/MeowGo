@@ -21,7 +21,8 @@ export const AppContext = createContext<{
   allEvents: Event[];
   allUsers: User[];
   myEvents: String[];
-  user: User | null;  // null se non ancora loggato
+  user: User | null; // null se non loggato  
+  setUser: (users: User) => void;
   db: SQLite.SQLiteDatabase;
 } | null>(null);
 
@@ -84,7 +85,7 @@ export default function RootLayout() {
   }
 
   return (
-    <AppContext.Provider value={{ allEvents, allUsers, myEvents, user, db: db! }}>
+    <AppContext.Provider value={{ allEvents, allUsers, myEvents, user, setUser, db: db! }}>
 
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Suspense fallback={<View style={StyleSheet.absoluteFill}><Text>Loading...</Text></View>}>
