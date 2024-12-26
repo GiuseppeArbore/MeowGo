@@ -8,12 +8,9 @@ import {
     TouchableOpacity,
     useColorScheme
 } from 'react-native';
-import * as SQLite from 'expo-sqlite';
-import * as FileSystem from 'expo-file-system';
-import { Asset } from 'expo-asset';
+
 
 import { useAppContext } from '../app/_layout';
-import { DATABASE_NAME } from '../utils/database';
 import { User } from './models/user';
 
 
@@ -121,7 +118,7 @@ export function Login_form() {
 
             if (result.length > 0) {
                 const userResult = result[0] as { username: string, password: string, name: string, surname: string, birthdate: string, taralli: number };
-                const ll_for = local_legend_for.map((ll: any) => ll.city); //TODO: da sistemare
+                const ll_for = local_legend_for.map((ll: any) => ll.city); 
                 setUser(new User(userResult.username, userResult.password, userResult.name, userResult.surname, new Date(userResult.birthdate), ll_for, userResult.taralli));
                 setModalVisible(false);
             } else {

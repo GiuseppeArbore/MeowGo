@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, useColorScheme, Dimensions, Image, TouchableOpacity, Modal, TextInput } from 'react-native';
-import * as SQLite from 'expo-sqlite';
-import * as FileSystem from 'expo-file-system';
-import { Asset } from 'expo-asset';
+
 import { useRouter } from 'expo-router'; // Importa il router
 import { FontAwesome } from '@expo/vector-icons'; // Importa l'icona FontAwesome
-import { DATABASE_NAME } from '../../utils/database';
 
 import { useAppContext } from '../_layout';
 
@@ -13,7 +10,7 @@ import { useAppContext } from '../_layout';
 
 
 const ProfileScreen: React.FC = () => {
-  const { db, user } = useAppContext();
+  const {user } = useAppContext();
 
 
   const colorScheme = useColorScheme();
@@ -22,7 +19,6 @@ const ProfileScreen: React.FC = () => {
 
   // Stato per la gestione della visibilità del Modal
   const [modalVisible, setModalVisible] = useState(false);
-  const [inputText, setInputText] = useState('');
 
   const screenHeight = Dimensions.get('window').height;
   const headerHeight = screenHeight * 0.1; // Adjust as necessary for the notification bar

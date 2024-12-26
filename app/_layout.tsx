@@ -4,13 +4,11 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
-import QuizScreen from './pages/QuizScreen'; import * as SQLite from 'expo-sqlite';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { SQLiteProvider, useSQLiteContext, type SQLiteDatabase } from 'expo-sqlite';
 import { useEffect, useState, Suspense, useContext, createContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import * as FileSystem from 'expo-file-system';
-import { Asset } from 'expo-asset';
+
 
 import { DATABASE_NAME } from '../utils/database';
 import { Event } from '../components/models/event';
