@@ -1,22 +1,8 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import * as SQLite from 'expo-sqlite';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { SQLiteProvider, useSQLiteContext, type SQLiteDatabase } from 'expo-sqlite';
-import { useEffect, useState, Suspense, useContext, createContext } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
-
-import { Event } from '../components/models/event';
-import { User } from '../components/models/user';
-
-
-
 
 export const DATABASE_NAME = "mydb.db";
 
@@ -53,13 +39,12 @@ export const loadDatabase = async () => {
 };
 
 export async function migrateDbIfNeeded(db: SQLiteDatabase) {
-    const DATABASE_VERSION = 3;
+    const DATABASE_VERSION = 1;
     let result = await db.getFirstAsync<{ user_version: number }>('PRAGMA user_version');
     //let currentDbVersion = result ? result.user_version : 0;
-    let currentDbVersion = 0;
+    let currentDbVersion = 0;   //TODO: cambiare usando la linea precedente quando tutti lo abbiamo fatto -> mettere a 0 se si vuol resettare il db alla versione 1
     if (currentDbVersion >= DATABASE_VERSION) {
       console.log('Database is up to date, version:', currentDbVersion);
-      currentDbVersion = 1;
       return;
     }
   
@@ -115,7 +100,6 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
         );
       `);
   
-      //await db.runAsync('INSERT INTO todos (value, intValue) VALUES (?, ?)', 'hello', 1);
       await db.runAsync(`INSERT INTO "users" ("username","password","name","surname","birthdate","taralli")
         VALUES ('Peppe','password','Giuseppe','Arbore','2001-10-11',10),
                 ('Caca','password','Claudia','Maggiulli','2002-03-26',0),
