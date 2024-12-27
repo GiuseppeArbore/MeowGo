@@ -45,7 +45,7 @@ const ProfileScreen: React.FC = () => {
             style={styles.taralloIcon}
           />
           <View style={styles.tarallo}>
-            <Text style={styles.taralloText}>{user!.taralli}</Text>
+            <Text style={styles.taralloText}>{user?.taralli}</Text>
           </View>
         </TouchableOpacity>
         
@@ -55,18 +55,18 @@ const ProfileScreen: React.FC = () => {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.formContainer}>
           <Text style={styles.label}>First Name</Text>
-          <Text style={styles.value}>{user!.name}</Text>
+          <Text style={styles.value}>{user?.name}</Text>
   
           <Text style={styles.label}>Last Name</Text>
           <Text style={styles.value}>{user?.surname}</Text>
   
           <Text style={styles.label}>Date of Birth</Text>
-          <Text style={styles.value}>{user!.birthdate.toString()}</Text>
+          <Text style={styles.value}>{user?.birthdate.toString()}</Text>
   
-          {user!.local_legend_for.length > 0 ? (
+          {user && user.local_legend_for.length > 0 ? (
             <>
               <Text style={styles.label}>Local Legends Cities</Text>
-              {user!.local_legend_for.map((city, index) => (
+              {user?.local_legend_for.map((city, index) => (
                 <View key={index} style={styles.legendItem}>
                   {city === 'Bari' ? (
                     <FontAwesome
@@ -102,7 +102,7 @@ const ProfileScreen: React.FC = () => {
           style={styles.buttonContainer}
           onTouchEnd={() => router.push('../pages/QuizScreen')}
         >
-          {user!.local_legend_for.length > 0 ? (
+          {user && user?.local_legend_for.length > 0 ? (
             <Text style={styles.button}>
               Become a Local Legend{'\n'}for another city
             </Text>
