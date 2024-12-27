@@ -45,7 +45,9 @@ export default function RootLayout() {
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [myEvents, setMyEvents] = useState<String[]>([]); //id degli eventi a cui partecipo
   const [db, setDb] = useState<SQLite.SQLiteDatabase | undefined>(undefined);
-  const [user, setUser] = useState<User | null>(defaultUser); //per testare, mettere a null e aggiornale nel momento del login @Caca
+  //const [user, setUser] = useState<User | null>(defaultUser); //per testing iniziale
+  const [user, setUser] = useState<User | null>(null); //per testing con login
+
 
   const colorScheme = useColorScheme();
 
@@ -58,14 +60,6 @@ export default function RootLayout() {
       const events = await db.getAllAsync('SELECT * FROM events');
       setAllUsers(users.map((user: any) => new User(user.username, user.password, user.name, user.surname, user.birthdate)));
       setAllEvents(events.map((event: any) => new Event(event.name, event.location, event.latitude, event.longitude, event.date, event.description, event.hour, event.max_people, event.creator, event.place, event.local_legend_here, event.secred_code, event.type, event.string)));
-      /*
-      setAllUsers(users.map((user: any) => new User(user.username, user.password, user.name, user.surname, user.birthdate)));
-      setAllEvents((await db.getAllAsync('SELECT * FROM events')).map((event: any) => new Event(event.name, event.location, event.date, event.location, event.participants, event.maxParticipants, event.creator, event.description, event.category, event.image, event.price, event.duration, event.latitude, event.longitude)));
-      console.log(allUsers);
-      console.log(allEvents);
-      */
-      console.log("Utenti che passo per l'app", allUsers);
-      console.log("Eventi che passo per l'app", allEvents);
     }
     fetchData();
   }, []);
