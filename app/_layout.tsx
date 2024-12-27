@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { SQLiteProvider, useSQLiteContext, type SQLiteDatabase } from 'expo-sqlite';
+import * as SQLite from 'expo-sqlite';
 import { useEffect, useState, Suspense, useContext, createContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
