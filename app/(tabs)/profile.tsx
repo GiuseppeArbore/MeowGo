@@ -1,107 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, useColorScheme, Dimensions, Image, TouchableOpacity, Modal, TextInput } from 'react-native';
-import * as SQLite from 'expo-sqlite';
-import * as FileSystem from 'expo-file-system';
-import { Asset } from 'expo-asset';
+
 import { useRouter } from 'expo-router'; // Importa il router
 import { FontAwesome } from '@expo/vector-icons'; // Importa l'icona FontAwesome
-import DateTimePicker from '@react-native-community/datetimepicker';
-const DATABASE_NAME = 'test.db';
 
-const loadDatabase = async () => {
-  const dbPath = `${FileSystem.documentDirectory}SQLite/${DATABASE_NAME}`;
+import { useAppContext } from '../_layout';
 
-  // Controlla se il database esiste già nella sandbox dell'app
-  const dbExists = await FileSystem.getInfoAsync(dbPath);
-  
-  if (dbExists.exists) {
-    console.log('Eliminazione del database esistente...');
-    await FileSystem.deleteAsync(dbPath, { idempotent: true });
-  }
-  
-  if (!dbExists.exists) {
-    // Copia il file .db dalla cartella assets alla sandbox dell'app
-    console.log('Copia del database preesistente...');
-    const asset = Asset.fromModule(require('../../assets/test.db'));
-    console.log('Percorso del database:', dbPath);
-    await asset.downloadAsync();
-
-    await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}SQLite`, {
-      intermediates: true,
-    });
-
-    await FileSystem.copyAsync({
-      from: asset.localUri!,
-      to: dbPath,
-    });
-    console.log('Database copiato con successo!');
-  } else {
-    console.log('Database già esistente.');
-  }
-
-  // Apri il database
-  const db = SQLite.openDatabaseSync(DATABASE_NAME);
-  console.log('Database aperto:', DATABASE_NAME);
-
-  return db;
-};
-
-// Carica e inizializza il database
-loadDatabase();
+//tolto loadDatabase perchè passo il db nello useContext
 
 
 const ProfileScreen: React.FC = () => {
+  const {user } = useAppContext();
+
+
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const router = useRouter();
 
-  // Stati per gestire i valori recuperati dal database
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [localLegends, setLocalLegends] = useState<string[]>([]);
-  const [taralli, setTaralli] = useState<number | null>(null);
   // Stato per la gestione della visibilità del Modal
   const [modalVisible, setModalVisible] = useState(false);
-  const [inputText, setInputText] = useState('');
-
-  const [selectedDate, setSelectedDate] = useState(new Date());
-    const [showDatePicker, setShowDatePicker] = useState(false);
-
-    const handleDatePicker = () => {
-        setShowDatePicker(true);
-      };
 
   const screenHeight = Dimensions.get('window').height;
   const headerHeight = screenHeight * 0.1; // Adjust as necessary for the notification bar
   const contentPaddingTop = screenHeight * 0.01; // Adjust as necessary for header gap
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        console.log('fetching data');
-        const db = await SQLite.openDatabaseAsync(DATABASE_NAME);
-        console.log('db opened');
-        // voglio stampare la lista delle tabelle presenti nel db
-        console.log(db.databasePath)
-        const user = await db.getAllAsync('SELECT * FROM users WHERE username = ?', ['Peppe']);  //Per ora prendiamo manualmente quando avremo il login lo prendiamo veramente
-        console.log('all users fetched');
-        console.log(user);
-        
-        setFirstName((user as { name: string }[]).map((user) => user.name).join(', '));
-        setLastName((user as { surname: string }[]).map((user) => user.surname).join(', '));
-        setDateOfBirth((user as { birth: string }[]).map((user) => user.birth).join(', '));
-        setTaralli((user as { taralli: number }[]).map((user) => user.taralli)[0] );
-        // Recupera le città per cui l'utente è una Local Legend
-        const cities = await db.getAllAsync('SELECT city FROM users_ll_for WHERE username = ?', [(user[0] as { username: string }).username]);
-        setLocalLegends((cities as { city: string }[]).map((item) => item.city));
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-    
-    fetchData();
-  }, []);
 
   const styles = createStyles(isDarkMode, contentPaddingTop, headerHeight);
    // Funzione per mostrare il Modal
@@ -124,7 +45,7 @@ const ProfileScreen: React.FC = () => {
             style={styles.taralloIcon}
           />
           <View style={styles.tarallo}>
-            <Text style={styles.taralloText}>{taralli}</Text>
+            <Text style={styles.taralloText}>{user?.taralli}</Text>
           </View>
         </TouchableOpacity>
         
@@ -135,34 +56,18 @@ const ProfileScreen: React.FC = () => {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.formContainer}>
           <Text style={styles.label}>First Name</Text>
-          <Text style={styles.value}>{firstName}</Text>
+          <Text style={styles.value}>{user?.name}</Text>
   
           <Text style={styles.label}>Last Name</Text>
-          <Text style={styles.value}>{lastName}</Text>
+          <Text style={styles.value}>{user?.surname}</Text>
   
           <Text style={styles.label}>Date of Birth</Text>
-          <Text style={styles.value}>{dateOfBirth}</Text>
-
-          <View >
-                    <Text style={styles.label}>Date:</Text>
-                    <TouchableOpacity onPress={handleDatePicker}>
-                        <Text style={styles.input}>
-                            {selectedDate.toLocaleDateString()}
-                        </Text>
-                    </TouchableOpacity>
-                    {showDatePicker && (
-                        <DateTimePicker
-                            value={selectedDate}
-                            mode="date"
-                            display = "default" //for iOS style
-                        />
-                    )}
-      </View>
+          <Text style={styles.value}>{user?.birthdate.toString()}</Text>
   
-          {localLegends.length > 0 ? (
+          {user && user.local_legend_for.length > 0 ? (
             <>
               <Text style={styles.label}>Local Legends Cities</Text>
-              {localLegends.map((city, index) => (
+              {user?.local_legend_for.map((city, index) => (
                 <View key={index} style={styles.legendItem}>
                   {city === 'Bari' ? (
                     <FontAwesome
@@ -198,7 +103,7 @@ const ProfileScreen: React.FC = () => {
           style={styles.buttonContainer}
           onTouchEnd={() => router.push('../pages/QuizScreen')}
         >
-          {localLegends.length > 0 ? (
+          {user && user?.local_legend_for.length > 0 ? (
             <Text style={styles.button}>
               Become a Local Legend{'\n'}for another city
             </Text>
@@ -257,7 +162,7 @@ const createStyles = (isDarkMode: boolean, contentPaddingTop: number, headerHeig
       right: 0,
       backgroundColor: isDarkMode ? '#000' : '#A1CEDC', // Sfondo dinamico
       zIndex: 10, // Garantisce che l'header rimanga sopra
-      paddingVertical: 10, // Margine interno verticale
+      paddingVertical: 1, // Margine interno verticale
       textAlign: 'center', // Allineamento del titolo
     },
     title: {

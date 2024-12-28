@@ -8,45 +8,11 @@ import {
     TouchableOpacity,
     useColorScheme
 } from 'react-native';
-import * as SQLite from 'expo-sqlite';
-import * as FileSystem from 'expo-file-system';
-import { Asset } from 'expo-asset';
-const DATABASE_NAME = 'mydb.db';
 
-const loadDatabase = async () => {
-  const dbPath = `${FileSystem.documentDirectory}SQLite/${DATABASE_NAME}`;
 
-  // Controlla se il database esiste già
-  const dbExists = await FileSystem.getInfoAsync(dbPath);
+import { useAppContext } from '../app/_layout';
+import { User } from './models/user';
 
-  if (!dbExists.exists) {
-    // Copia il file .db dalla cartella assets alla sandbox dell'app
-    console.log('Copia del database preesistente...');
-    const asset = Asset.fromModule(require('../assets/mydb.db'));
-    await asset.downloadAsync();
-
-    await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}SQLite`, {
-      intermediates: true,
-    });
-
-    await FileSystem.copyAsync({
-      from: asset.localUri!,
-      to: dbPath,
-    });
-    console.log('Database copiato con successo!');
-  } else {
-    console.log('Database già esistente.');
-  }
-
-  // Apri il database
-  const db = SQLite.openDatabaseSync(DATABASE_NAME);
-  console.log('Database aperto:', DATABASE_NAME);
-
-  return db;
-};
-
-// Carica e inizializza il database
-loadDatabase();
 
 export function Login_form() {
     const [username, setUsername] = useState('');
@@ -55,6 +21,9 @@ export function Login_form() {
     const [isModalVisible, setModalVisible] = useState<boolean>(true);
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
+    const { db } = useAppContext();
+    const { user, setUser } = useAppContext();
+    
     
 
     const colors = {
@@ -131,14 +100,26 @@ export function Login_form() {
     
     const handleLogin = async () => {
         try {
+            if (!db) {
+                throw new Error('Database not found');
+            } else {
+                console.log('Database opened at:', db.databasePath);
+            }
+            /*
             console.log('Opening database...');
             const db = await SQLite.openDatabaseAsync(DATABASE_NAME);
             console.log('Database opened at:', db.databasePath);
+            */
     
             const result = await db.getAllAsync('SELECT * FROM users WHERE username = ? AND password = ?', [username, password]);
-            console.log('Query result:', result);
+            console.log('Login Query result:', result);
+            const local_legend_for = await db.getAllAsync('SELECT city FROM users_ll_for WHERE username = ?', [username]);
+            console.log('Local legend for:', local_legend_for);
 
             if (result.length > 0) {
+                const userResult = result[0] as { username: string, password: string, name: string, surname: string, birthdate: string, taralli: number };
+                const ll_for = local_legend_for.map((ll: any) => ll.city); 
+                setUser(new User(userResult.username, userResult.password, userResult.name, userResult.surname, new Date(userResult.birthdate), ll_for, userResult.taralli));
                 setModalVisible(false);
             } else {
                 setErrorMessage('Username o password errati');
@@ -183,9 +164,5 @@ export function Login_form() {
             </View>
         </Modal>
     );
-
-    
-
-
 
 }

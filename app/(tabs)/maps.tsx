@@ -7,7 +7,12 @@ import { Link } from 'expo-router';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Login_form } from '@/components/Login_form';
+import { DATABASE_NAME } from '../../utils/database';
+import { Event } from '../../components/models/event';
+import { User } from '../../components/models/user';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
+import { useAppContext } from '../_layout'; // Percorso al file RootLayout
 
 const TabThreeScreen: React.FC = () => {
 
@@ -21,6 +26,8 @@ const TabThreeScreen: React.FC = () => {
         const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
         Linking.openURL(url).catch(err => console.error('Error:', err));
     };
+
+
 
     const styles = StyleSheet.create({
     
