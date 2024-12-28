@@ -50,6 +50,16 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
   
     if (currentDbVersion === 0) {
       console.log('Migrating to version 1');
+
+      // Verifica transazioni attive
+      let hasActiveTransaction = await db.getAllAsync(`SELECT * FROM sqlite_master WHERE type='transaction';`);
+
+      if (hasActiveTransaction.length > 0) {
+        console.log('Transactions detected, waiting for commit...');
+        await db.execAsync('COMMIT;'); // Chiudi eventuali transazioni in corso
+      }
+
+      await db.execAsync(`PRAGMA journal_mode = 'wal';`);
   
       await db.execAsync(`
         PRAGMA journal_mode = 'wal';
