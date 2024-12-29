@@ -4,15 +4,16 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
+import { useAppContext } from './_layout';
 
 export default function Filter() {
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
     const navigation = useNavigation();
-    const [selectedCity, setSelectedCity] = useState('Turin');
+    const { searchFilters, setSearchFilters  } = useAppContext();
+    const [searchFiltersTemp, setSearchFiltersTemp] = useState({ ...searchFilters }); 
+
     const [showPickerAvailableCities, setShowPickerAvailableCities] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [selectedTime, setSelectedTime] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
 
@@ -143,6 +144,7 @@ export default function Filter() {
 
     const handleApply = () => {
         console.log('Search done');
+        setSearchFilters(searchFiltersTemp);
         navigation.goBack();
     };
 
@@ -165,17 +167,15 @@ export default function Filter() {
                                 style={styles.clickableArea}
                                 onPress={toggleCityPicker}>
                                 {Platform.OS === 'ios' &&<Text style={styles.searchLabel}>
-                                    {selectedCity}
+                                    {searchFiltersTemp.city}
                                 </Text>}
                                 {Platform.OS === 'ios' &&<IconSymbol name="location" size={20} color={colorScheme === 'dark' ? '#FFF' : '#000'}/>}
                             </TouchableOpacity>
                         </View>
                         {((showPickerAvailableCities && Platform.OS === 'ios') || Platform.OS === 'android') &&
                             <Picker
-                                selectedValue={selectedCity}
-                                onValueChange={(cityValue) => {
-                                    setSelectedCity(cityValue);
-                                }}
+                                selectedValue={searchFiltersTemp.city}
+                                onValueChange={(cityValue) => setSearchFiltersTemp({ ...searchFiltersTemp, city: cityValue })}
                             >
                                 <Picker.Item label="All cities" value="All cities" />
                                 <Picker.Item label="Turin" value="Turin" />
@@ -192,7 +192,7 @@ export default function Filter() {
                             onPress={toggleDatePicker}
                         >
                             <Text style={styles.searchLabel}>
-                                {selectedDate.toLocaleDateString()}
+                                {searchFiltersTemp.date.toLocaleDateString()}
                             </Text>
                             <IconSymbol size={20} name="calendar" color={colorScheme === 'dark' ? '#FFF' : '#000'} />
                         </TouchableOpacity>
@@ -200,12 +200,12 @@ export default function Filter() {
 
                     {showDatePicker && (
                         <DateTimePicker
-                            value={selectedDate}
+                            value={searchFiltersTemp.date}
                             mode="date"
                             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                             onChange={(event, date) => {
                                 if (Platform.OS === 'android') setShowDatePicker(false)
-                                if (date) setSelectedDate(date);
+                                if (date) setSearchFiltersTemp({ ...searchFiltersTemp, date: date });
                             }}
                         />
                     )}
@@ -219,19 +219,19 @@ export default function Filter() {
                             onPress={toggleTimePicker}
                         >
                             <Text style={styles.searchLabel}>
-                                {selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                {searchFiltersTemp.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </Text>
                             <IconSymbol size={20} name="clock" color={colorScheme === 'dark' ? '#FFF' : '#000'} />
                         </TouchableOpacity>
                     </View>
                     {showTimePicker && (
                         <DateTimePicker
-                            value={selectedTime}
+                            value={searchFiltersTemp.date}
                             mode="time"
                             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                             onChange={(event, time) => {
                                 if (Platform.OS === 'android') setShowTimePicker(false);
-                                if (time) setSelectedTime(time);
+                                if (time) setSearchFiltersTemp({ ...searchFiltersTemp, date: time });
                             }}
                         />
                     )}
