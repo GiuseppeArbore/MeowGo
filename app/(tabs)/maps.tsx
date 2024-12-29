@@ -17,8 +17,8 @@ import { useAppContext } from '../_layout'; // Percorso al file RootLayout
 const TabThreeScreen: React.FC = () => {
 
     const [selectedView, setSelectedView] = useState(1);
-    const [city, setCity] = useState('Torino'); // Stato per la città
-    const [dateTime, setDateTime] = useState('Today - 20:00'); // Stato per ora e giorno
+    const [city, setCity] = useState<string>('Torino'); // Stato per la città
+    const [dateTime, setDateTime] = useState<string>('Today - 20:00'); // Stato per ora e giorno
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
 
@@ -26,8 +26,6 @@ const TabThreeScreen: React.FC = () => {
         const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
         Linking.openURL(url).catch(err => console.error('Error:', err));
     };
-
-
 
     const styles = StyleSheet.create({
     
@@ -98,7 +96,7 @@ const TabThreeScreen: React.FC = () => {
     });
 
     return (
-        <View style={styles.container}>x
+        <View style={styles.container}>
             <Login_form />
             <View style={styles.filterSearchContainer}>
 
