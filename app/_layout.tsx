@@ -10,11 +10,41 @@ import * as SQLite from 'expo-sqlite';
 import { useEffect, useState, Suspense, useContext, createContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-
 import { DATABASE_NAME } from '../utils/database';
 import { Event } from '../components/models/event';
 import { User } from '../components/models/user';
 import {migrateDbIfNeeded } from '../utils/database';
+
+
+export interface SearchFilters {
+  city: string;
+  date: Date;
+}
+
+const defaultSearchFilters: SearchFilters = {
+  city: 'Turin',
+  date: new Date(),
+};
+
+export type Filters = {
+  localLegend: boolean;
+  eventType: string | null;
+  maxPeople: number;
+  location: string | null;
+};
+
+// Default filters
+const defaultFilters: Filters = {
+  localLegend: false,
+  eventType: null,
+  maxPeople: 1,
+  location: null,
+};
+
+export type RootStackParamList = {
+  Home: undefined;
+  search: undefined;
+};
 
 
 const defaultUser: User = new User("Peppe", "password", "Giuseppe", "Arbore", new Date(2001, 10, 11), ["Turin", "Bari"], 10);
@@ -26,6 +56,10 @@ export const AppContext = createContext<{
   user: User | null; // null se non loggato  
   setUser: (users: User) => void;
   db: SQLite.SQLiteDatabase;
+  filters: Filters; // Aggiunto filters
+  setFilters: (filters: Filters) => void;
+  searchFilters: SearchFilters;
+  setSearchFilters: (searchFilters: SearchFilters) => void;
 } | null>(null);
 
 // Exportiamo un hook per semplificare l'uso del contesto
@@ -41,6 +75,8 @@ export const useAppContext = () => {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [filters, setFilters] = useState<Filters>(defaultFilters);
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>(defaultSearchFilters);
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [myEvents, setMyEvents] = useState<String[]>([]); //id degli eventi a cui partecipo
@@ -78,7 +114,7 @@ export default function RootLayout() {
   }
 
   return (
-    <AppContext.Provider value={{ allEvents, allUsers, myEvents, user, setUser, db: db! }}>
+    <AppContext.Provider value={{allEvents, allUsers, myEvents, user, setUser, db: db!, filters, setFilters, searchFilters, setSearchFilters}}>
 
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Suspense fallback={<View style={StyleSheet.absoluteFill}><Text>Loading...</Text></View>}>
@@ -89,6 +125,7 @@ export default function RootLayout() {
 
               <Stack.Screen name="+not-found" />
               <Stack.Screen name="filter" options={{ presentation: 'transparentModal', headerShown: false }} />
+              <Stack.Screen name="search" options={{ presentation: 'transparentModal', headerShown: false }} />
             </Stack>
             <StatusBar style="auto" />
           </SQLiteProvider>
