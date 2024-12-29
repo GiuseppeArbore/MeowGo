@@ -10,11 +10,15 @@ import * as SQLite from 'expo-sqlite';
 import { useEffect, useState, Suspense, useContext, createContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-
 import { DATABASE_NAME } from '../utils/database';
 import { Event } from '../components/models/event';
 import { User } from '../components/models/user';
 import {migrateDbIfNeeded } from '../utils/database';
+
+export type RootStackParamList = {
+  Home: undefined;
+  search: undefined;
+};
 
 
 const defaultUser: User = new User("Peppe", "password", "Giuseppe", "Arbore", new Date(2001, 10, 11), ["Turin", "Bari"], 10);
@@ -89,6 +93,7 @@ export default function RootLayout() {
 
               <Stack.Screen name="+not-found" />
               <Stack.Screen name="filter" options={{ presentation: 'transparentModal', headerShown: false }} />
+              <Stack.Screen name="search" options={{ presentation: 'transparentModal', headerShown: false }} />
             </Stack>
             <StatusBar style="auto" />
           </SQLiteProvider>

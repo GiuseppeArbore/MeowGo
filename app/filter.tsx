@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Switch, TouchableOpacity, useColorScheme, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Text, View, Switch, TouchableOpacity, useColorScheme, TouchableWithoutFeedback, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
 import Slider from '@react-native-community/slider';
@@ -13,7 +13,126 @@ export default function Filter() {
   const [showPickerLocation, setShowPickerLocation] = useState(false);
   const [showPickerEventType, setShowPickerEventType] = useState(false);
   const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
   const navigation = useNavigation();
+
+  const colors = {
+    background: isDarkMode ? '#1C1C1C' : '#FFFFFF',
+    text: isDarkMode ? '#FFFFFF' : '#000000',
+    inputBackground: isDarkMode ? '#2E2E2E' : '#F5F5F5',
+    buttonBackground: isDarkMode ? '#2E2E2E' : '#E0E0E0',
+    buttonText: isDarkMode ? '#FFFFFF' : '#000000',
+  };
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 20,
+
+    },
+    overlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Sfondo semi-trasparente
+      justifyContent: 'center', // Posiziona il contenuto in basso
+    },
+    modal: {
+      alignItems: 'center',
+      backgroundColor: colors.background,
+      borderRadius: 20,
+      paddingTop: 20,
+      paddingBottom: 0, // Tolto padding sotto, bottoni faranno il bordo
+      marginHorizontal: 20,
+      maxHeight: '70%', // Massimo metà schermo
+    },
+    card: {
+      width: '90%',
+      minHeight: 50,
+      justifyContent: 'center',
+      backgroundColor: colors.inputBackground,
+      borderWidth: 1,
+      borderColor: '#ddd',
+      padding: 15,
+      marginBottom: 10,
+      elevation: 3, // Ombra per Android
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      borderRadius: 25,
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+    },
+    filterRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    filterLabel: {
+      flex: 1,
+      fontSize: 16,
+      color: colors.text,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    clickableArea: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    filterValue: {
+      fontSize: 16,
+      color: '#555',
+      textAlign: 'right',
+      marginRight: 8,
+      flex: 1,
+    },
+    slider: {
+      width: '100%',
+      height: 40,
+      marginTop: 10,
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      marginTop: 10,
+    },
+    button: {
+      flex: 1,
+      paddingVertical: 15,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    cancelButton: {
+      backgroundColor: colors.buttonBackground,
+      borderBottomLeftRadius: 20,
+      borderRightWidth: 0.5,
+      borderTopWidth: 1,
+      borderColor: '#ddd',
+    },
+    applyButton: {
+      backgroundColor: colors.buttonBackground,
+      borderBottomRightRadius: 20,
+      borderLeftWidth: 0.5,
+      borderTopWidth: 1,
+      borderColor: '#ddd',
+    },
+    buttonText: {
+      fontSize: 16,
+      color: colors.text,
+    },
+    applyButtonText: {
+      color: colors.text,
+      fontWeight: 'bold',
+    },
+    headerText: {
+      color: colors.text,
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginBottom: 20,
+      textAlign: 'center',
+    },
+  });
 
   // Funzione per aprire il picker location
   const handlePickerLocation = () => {
@@ -46,7 +165,7 @@ export default function Filter() {
 
         <View style={styles.modal}>
 
-        <Text style={styles.headerText}>Filter</Text>
+          <Text style={styles.headerText}>Filter</Text>
 
           {/* Local Legend Filter */}
           <View style={styles.card}>
@@ -67,26 +186,26 @@ export default function Filter() {
                 style={styles.clickableArea}
                 onPress={handlePickerEventType}
               >
-                <View style={styles.row}>
+                {Platform.OS === 'ios' && <View style={styles.row}>
                   <Text style={styles.filterValue}>{eventType || 'Select...'}</Text>
                   <IconSymbol size={16} name="chevron.right" color={colorScheme === 'dark' ? '#FFF' : '#000'} />
-                </View>
+                </View>}
               </TouchableOpacity>
             </View>
-            {showPickerEventType && (
-              <Picker
+            {((showPickerEventType && Platform.OS === 'ios') || Platform.OS === 'android') &&
+              (<Picker
                 selectedValue={eventType}
                 onValueChange={(itemValue) => {
                   setEventType(itemValue === "Select..." ? null : itemValue);
                 }}
               >
                 <Picker.Item label="Select..." value="Select..." />
-                <Picker.Item label="Adventure" value="Adventure" />
-                <Picker.Item label="Cultural" value="Culture" />
                 <Picker.Item label="Social" value="Social" />
                 <Picker.Item label="Sport" value="Sport" />
+                <Picker.Item label="Adventure" value="Adventure" />
+                <Picker.Item label="Cultural" value="Cultural" />
               </Picker>
-            )}
+              )}
           </View>
 
           {/* Max People Filter */}
@@ -115,13 +234,13 @@ export default function Filter() {
                 style={styles.clickableArea}
                 onPress={handlePickerLocation}
               >
-                <View style={styles.row}>
+                {Platform.OS === 'ios' && <View style={styles.row}>
                   <Text style={styles.filterValue}>{location || 'Select...'}</Text>
                   <IconSymbol size={16} name="chevron.right" color={colorScheme === 'dark' ? '#FFF' : '#000'} />
-                </View>
+                </View>}
               </TouchableOpacity>
             </View>
-            {showPickerLocation && (
+            {((showPickerLocation && Platform.OS === 'ios') || Platform.OS === 'android') && (
               <Picker
                 selectedValue={location}
                 onValueChange={(itemValue) => {
@@ -150,116 +269,3 @@ export default function Filter() {
     </TouchableWithoutFeedback>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Sfondo semi-trasparente
-    justifyContent: 'center', // Posiziona il contenuto in basso
-  },
-  modal: {
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 20,
-    paddingTop: 20,
-    paddingBottom: 0, // Tolto padding sotto, bottoni faranno il bordo
-    marginHorizontal: 20,
-    maxHeight: '70%', // Massimo metà schermo
-  },
-  card: {
-    width: '90%',
-    minHeight: 50,
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 10,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  filterRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  filterLabel: {
-    flex: 1,
-    fontSize: 16,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  clickableArea: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  filterValue: {
-    fontSize: 16,
-    color: '#555',
-    textAlign: 'right',
-    marginRight: 8,
-    flex: 1,
-  },
-  slider: {
-    width: '100%',
-    height: 40,
-    marginTop: 10,
-  },
-  pickerContainer: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-    paddingVertical: 8,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    borderTopColor: '#ddd',
-    marginTop: 10,
-  },
-  button: {
-    flex: 1,
-    paddingVertical: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cancelButton: {
-    backgroundColor: '#f5f5f5',
-    borderBottomLeftRadius: 20,
-    borderRightWidth: 0.5,
-    borderTopWidth: 1,
-    borderColor: '#ddd',
-  },
-  applyButton: {
-    backgroundColor: '#f5f5f5',
-    borderBottomRightRadius: 20,
-    borderLeftWidth: 0.5,
-    borderTopWidth: 1,
-    borderColor: '#ddd',
-  },
-  buttonText: {
-    fontSize: 16,
-    color: '#000',
-  },
-  applyButtonText: {
-    fontWeight: 'bold',
-  },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-});
