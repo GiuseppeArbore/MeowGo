@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, useColorScheme, Dimensions, Image, TouchableOpacity, Modal, TextInput } from 'react-native';
 
 import { useRouter } from 'expo-router'; // Importa il router
@@ -10,8 +10,8 @@ import { useAppContext } from '../_layout';
 
 
 const ProfileScreen: React.FC = () => {
-  const {user } = useAppContext();
-
+  const {user, db , setUser} = useAppContext();
+  const [localLegendCities, setLocalLegendCities] = useState<string[]>([]);
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
@@ -25,6 +25,25 @@ const ProfileScreen: React.FC = () => {
   const contentPaddingTop = screenHeight * 0.01; // Adjust as necessary for header gap
 
   const styles = createStyles(isDarkMode, contentPaddingTop, headerHeight);
+
+  useEffect(() => {
+    const fetchLocalLegendCities = async () => {
+      if (db && user) {
+        setUser(user);
+        console.log(user);
+        const ll = user.local_legend_for
+        console.log("Local",ll);
+        if (ll.length > 0) {
+          setLocalLegendCities(ll.map((result: any) => result.city));
+          console.log("Local done");
+        }
+        console.log("User")
+      }
+    };
+
+    fetchLocalLegendCities();
+  }, [db, user]);
+  
    // Funzione per mostrare il Modal
    const showModal = () => {
     setModalVisible(true);
@@ -76,7 +95,7 @@ const ProfileScreen: React.FC = () => {
                     />
                   ) : city === 'Torino' ? (
                     <FontAwesome
-                      name="cloud"
+                      name="snowflake-o"
                       style={styles.iconCity}
                       color={styles.iconColor.color}
                     />
