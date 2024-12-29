@@ -4,12 +4,11 @@ import { useState } from 'react';
 import Slider from '@react-native-community/slider';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useNavigation } from '@react-navigation/native';
+import { useAppContext } from './_layout';
 
 export default function Filter() {
-  const [isLocalLegendEnabled, setIsLocalLegendEnabled] = useState(false);
-  const [eventType, setEventType] = useState(null);
-  const [maxPeople, setMaxPeople] = useState(1);
-  const [location, setLocation] = useState(null);
+  const { filters, setFilters } = useAppContext();
+  const [filtersTemp, setFiltersTemp] = useState({ ...filters }); 
   const [showPickerLocation, setShowPickerLocation] = useState(false);
   const [showPickerEventType, setShowPickerEventType] = useState(false);
   const colorScheme = useColorScheme();
@@ -146,12 +145,29 @@ export default function Filter() {
     setShowPickerLocation(false);
   }
 
+  const handleToggleLocalLegend = () => {
+    setFiltersTemp({ ...filtersTemp, localLegend: !filtersTemp.localLegend });
+  };
+
+  const handleEventTypeChange = (value: any) => {
+    setFiltersTemp({ ...filtersTemp, eventType: value });
+  };
+
+  const handleMaxPeopleChange = (value: any) => {
+    setFiltersTemp({ ...filtersTemp, maxPeople: value });
+  };
+
+  const handleLocationChange = (value: any) => {
+    setFiltersTemp({ ...filtersTemp, location: value });
+  };
+
   const handleCancel = () => {
     navigation.goBack();
   };
 
   const handleApply = () => {
     console.log('Filters applied');
+    setFilters(filtersTemp);
     navigation.goBack();
   };
 
@@ -172,8 +188,8 @@ export default function Filter() {
             <View style={styles.filterRow}>
               <Text style={styles.filterLabel}>Local Legend</Text>
               <Switch
-                value={isLocalLegendEnabled}
-                onValueChange={setIsLocalLegendEnabled}
+                value={filtersTemp.localLegend}
+                onValueChange={handleToggleLocalLegend}
               />
             </View>
           </View>
@@ -187,19 +203,17 @@ export default function Filter() {
                 onPress={handlePickerEventType}
               >
                 {Platform.OS === 'ios' && <View style={styles.row}>
-                  <Text style={styles.filterValue}>{eventType || 'Select...'}</Text>
+                  <Text style={styles.filterValue}>{filtersTemp.eventType || 'Select...'}</Text>
                   <IconSymbol size={16} name="chevron.right" color={colorScheme === 'dark' ? '#FFF' : '#000'} />
                 </View>}
               </TouchableOpacity>
             </View>
             {((showPickerEventType && Platform.OS === 'ios') || Platform.OS === 'android') &&
               (<Picker
-                selectedValue={eventType}
-                onValueChange={(itemValue) => {
-                  setEventType(itemValue === "Select..." ? null : itemValue);
-                }}
+                selectedValue={filtersTemp.eventType}
+                onValueChange={handleEventTypeChange}
               >
-                <Picker.Item label="Select..." value="Select..." />
+                <Picker.Item label="Select..." value="" />
                 <Picker.Item label="Social" value="Social" />
                 <Picker.Item label="Sport" value="Sport" />
                 <Picker.Item label="Adventure" value="Adventure" />
@@ -212,7 +226,7 @@ export default function Filter() {
           <View style={styles.card}>
             <View style={styles.filterRow}>
               <Text style={styles.filterLabel}>Max People</Text>
-              <Text style={styles.filterValue}>{maxPeople}</Text>
+              <Text style={styles.filterValue}>{filtersTemp.maxPeople}</Text>
             </View>
             <Slider
               style={styles.slider}
@@ -221,8 +235,8 @@ export default function Filter() {
               minimumTrackTintColor="black"
               maximumTrackTintColor="#ddd"
               step={1}
-              value={maxPeople}
-              onValueChange={(value) => setMaxPeople(value)}
+              value={filtersTemp.maxPeople}
+              onValueChange={handleMaxPeopleChange}
             />
           </View>
 
@@ -235,19 +249,17 @@ export default function Filter() {
                 onPress={handlePickerLocation}
               >
                 {Platform.OS === 'ios' && <View style={styles.row}>
-                  <Text style={styles.filterValue}>{location || 'Select...'}</Text>
+                  <Text style={styles.filterValue}>{filtersTemp.location || 'Select...'}</Text>
                   <IconSymbol size={16} name="chevron.right" color={colorScheme === 'dark' ? '#FFF' : '#000'} />
                 </View>}
               </TouchableOpacity>
             </View>
             {((showPickerLocation && Platform.OS === 'ios') || Platform.OS === 'android') && (
               <Picker
-                selectedValue={location}
-                onValueChange={(itemValue) => {
-                  setLocation(itemValue === "Select..." ? null : itemValue);
-                }}
+                selectedValue={filtersTemp.location}
+                onValueChange={handleLocationChange}
               >
-                <Picker.Item label="Select..." value={"Select..."} />
+                <Picker.Item label="Select..." value="" />
                 <Picker.Item label="Everywhere" value="Everywhere" />
                 <Picker.Item label="Outside" value="Outside" />
                 <Picker.Item label="Inside" value="Inside" />

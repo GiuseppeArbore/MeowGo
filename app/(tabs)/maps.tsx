@@ -1,9 +1,9 @@
 
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, useColorScheme } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, useColorScheme, ScrollView } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Linking } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, useNavigation } from 'expo-router';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Login_form } from '@/components/Login_form';
@@ -13,14 +13,26 @@ import { User } from '../../components/models/user';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { useAppContext } from '../_layout'; // Percorso al file RootLayout
+import { FilterChips } from '@/components/FilterChips';
+
+
+
 
 const TabThreeScreen: React.FC = () => {
 
     const [selectedView, setSelectedView] = useState(1);
+    const { filters, setFilters } = useAppContext();
     const [city, setCity] = useState<string>('Torino'); // Stato per la città
     const [dateTime, setDateTime] = useState<string>('Today - 20:00'); // Stato per ora e giorno
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
+
+    const filterTextMap: Record<string, string> = {
+        localLegend: filters.localLegend ? 'Local Legend' : '',
+        maxPeople: filters.maxPeople > 1 ? `< ${filters.maxPeople} people` : '',
+        eventType: filters.eventType || '',
+        location: filters.location ? `${filters.location}` : '',
+    };
 
     const openGoogleMaps = (latitude: number, longitude: number) => {
         const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
@@ -28,7 +40,7 @@ const TabThreeScreen: React.FC = () => {
     };
 
     const styles = StyleSheet.create({
-    
+
         container: {
             flex: 1,
         },
@@ -92,7 +104,29 @@ const TabThreeScreen: React.FC = () => {
             fontSize: 14,
             textAlign: 'center',
             color: isDarkMode ? '#FFF' : '#000',
-        }, 
+        },
+        filterBar: {
+            position: 'absolute',
+            top: 10,
+            left: 0,
+            right: 0,
+            flexDirection: 'row',
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            zIndex: 10,
+        },
+        filterChip: {
+            marginHorizontal: 5,
+            paddingHorizontal: 15,
+            paddingVertical: 8,
+            borderRadius: 20,
+            backgroundColor: isDarkMode ? '#444' : '#ddd',
+        },
+        filterText: {
+            fontSize: 14,
+            color: isDarkMode ? '#FFF' : '#000',
+
+        },
     });
 
     return (
@@ -126,10 +160,13 @@ const TabThreeScreen: React.FC = () => {
             </View>
             {selectedView === 0 ? (
                 <View style={styles.listContainer}>
-                    <Text style={styles.listText}>Qui ci m sarà la lista!</Text>
+                    <Text style={styles.listText}>Qui ci sarà la lista!</Text>
                 </View>
             ) : (
                 <View style={styles.mapContainer}>
+                    {/* Barra filtri scrollabile */}
+                    <FilterChips/>
+
                     <MapView
                         style={styles.map}
                         initialRegion={{
