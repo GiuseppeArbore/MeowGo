@@ -19,7 +19,8 @@ const MAPPING = {
   'magnifyingglass' : 'search',
   'calendar' : 'calendar-month',
   'clock' : 'access-time',
-  'location': 'location-on'
+  'location': 'location-on',
+  'xmark' : 'close',
 
 } as unknown as Partial<
   Record<

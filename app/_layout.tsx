@@ -15,6 +15,23 @@ import { Event } from '../components/models/event';
 import { User } from '../components/models/user';
 import {migrateDbIfNeeded } from '../utils/database';
 
+
+// Definisco un tipo per i filtri
+export type Filters = {
+  localLegend: boolean;
+  eventType: string | null;
+  maxPeople: number;
+  location: string | null;
+};
+
+// Default filters
+const defaultFilters: Filters = {
+  localLegend: false,
+  eventType: null,
+  maxPeople: 1,
+  location: null,
+};
+
 export type RootStackParamList = {
   Home: undefined;
   search: undefined;
@@ -30,6 +47,8 @@ export const AppContext = createContext<{
   user: User | null; // null se non loggato  
   setUser: (users: User) => void;
   db: SQLite.SQLiteDatabase;
+  filters: Filters; // Aggiunto filters
+  setFilters: (filters: Filters) => void;
 } | null>(null);
 
 // Exportiamo un hook per semplificare l'uso del contesto
@@ -45,6 +64,7 @@ export const useAppContext = () => {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [filters, setFilters] = useState<Filters>(defaultFilters);
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [myEvents, setMyEvents] = useState<String[]>([]); //id degli eventi a cui partecipo
@@ -82,7 +102,7 @@ export default function RootLayout() {
   }
 
   return (
-    <AppContext.Provider value={{ allEvents, allUsers, myEvents, user, setUser, db: db! }}>
+    <AppContext.Provider value={{allEvents, allUsers, myEvents, user, setUser, db: db!, filters, setFilters}}>
 
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Suspense fallback={<View style={StyleSheet.absoluteFill}><Text>Loading...</Text></View>}>
