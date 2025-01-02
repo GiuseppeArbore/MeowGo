@@ -18,7 +18,7 @@ import { SearchBar } from '@/components/SearchBar';
 
 
 const TabThreeScreen: React.FC = () => {
-
+    const { allEvents } = useAppContext();
     const [selectedView, setSelectedView] = useState(1);
     const { filters, searchFilters } = useAppContext();
     const colorScheme = useColorScheme();

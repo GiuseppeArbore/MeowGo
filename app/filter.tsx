@@ -51,7 +51,7 @@ export default function Filter() {
       justifyContent: 'center',
       backgroundColor: colors.inputBackground,
       borderWidth: 1,
-      borderColor: '#ddd',
+      borderColor: colors.inputBackground,
       padding: 15,
       marginBottom: 10,
       elevation: 3, // Ombra per Android
@@ -107,14 +107,14 @@ export default function Filter() {
       borderBottomLeftRadius: 20,
       borderRightWidth: 0.5,
       borderTopWidth: 1,
-      borderColor: '#ddd',
+      borderColor: colors.buttonBackground,
     },
     applyButton: {
       backgroundColor: colors.buttonBackground,
       borderBottomRightRadius: 20,
       borderLeftWidth: 0.5,
       borderTopWidth: 1,
-      borderColor: '#ddd',
+      borderColor: colors.buttonBackground,
     },
     buttonText: {
       fontSize: 16,
