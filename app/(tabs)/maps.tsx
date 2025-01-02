@@ -1,36 +1,37 @@
 import React, { useState } from 'react';
-import {
-    StyleSheet,
-    View,
-    TouchableOpacity,
-    useColorScheme,
-} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, useColorScheme, ScrollView } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Linking } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, useNavigation } from 'expo-router';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Login_form } from '@/components/Login_form';
+import { DATABASE_NAME } from '../../utils/database';
 import { Event } from '../../components/models/event';
 import { useAppContext } from '../_layout'; // Percorso al file RootLayout
 import EventDetailsPopup from '@/components/EventDetailsPopup';
 import { EventList } from '@/components/EventList';
+import { FilterChips } from '@/components/FilterChips';
+import { SearchBar } from '@/components/SearchBar';
 
-const styles = StyleSheet.create({
-    container: { flex: 1 },
-    segmentedControlContainer: { marginTop: 10, marginHorizontal: 10 },
-    filterSearchContainer: { marginTop: 50, marginBottom: 1 },
-    mapContainer: { flex: 1, marginTop: 10 },
-    map: { flex: 1 },
-    filterButton: { marginLeft: 10 },
-});
+
+
 
 const TabThreeScreen: React.FC = () => {
-    const { allEvents } = useAppContext(); // Accediamo ai dati dal contesto
-    const colorScheme = useColorScheme() || 'light';
-    const [selectedView, setSelectedView] = useState(0);
+
+    const [selectedView, setSelectedView] = useState(1);
+    const { filters, searchFilters } = useAppContext();
+    const colorScheme = useColorScheme();
+    const isDarkMode = colorScheme === 'dark';
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+
+    const filterTextMap: Record<string, string> = {
+        localLegend: filters.localLegend ? 'Local Legend' : '',
+        maxPeople: filters.maxPeople > 1 ? `< ${filters.maxPeople} people` : '',
+        eventType: filters.eventType || '',
+        location: filters.location ? `${filters.location}` : '',
+    };
 
     const openGoogleMaps = (latitude: number, longitude: number) => {
         const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
@@ -47,10 +48,50 @@ const TabThreeScreen: React.FC = () => {
         setSelectedEvent(null);
     };
 
+    const styles = StyleSheet.create({
+
+        container: {
+            flex: 1,
+        },
+        segmentedControlContainer: {
+            marginHorizontal: 10,
+            paddingHorizontal: 10,
+        },
+        filterSearchContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginTop: 60,
+            marginBottom: 8,
+            marginRight: 10,
+            paddingVertical: 5,
+            paddingHorizontal: 10,
+        },
+        mapContainer: {
+            flex: 1,
+            marginTop: 10,
+        },
+        map: {
+            flex: 1,
+        },
+        filterButton: {
+            width: 40,
+            height: 40,
+            backgroundColor: isDarkMode ? '#333' : '#e3e3e4',
+            borderRadius: 20,
+            marginLeft: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+    });
+
     return (
         <View style={styles.container}>
             <Login_form />
             <View style={styles.filterSearchContainer}>
+
+                
+                {/* Barra finta cliccabile */}   
+                <SearchBar/>
                 <TouchableOpacity style={styles.filterButton}>
                     <Link href="/filter">
                         <IconSymbol
@@ -73,6 +114,8 @@ const TabThreeScreen: React.FC = () => {
                 <EventList />
             ) : (
                 <View style={styles.mapContainer}>
+                    {/* Barra filtri scrollabile */}
+                    <FilterChips />
                     <MapView
                         style={styles.map}
                         initialRegion={{

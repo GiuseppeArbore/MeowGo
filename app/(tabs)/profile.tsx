@@ -50,6 +50,7 @@ const ProfileScreen: React.FC = () => {
         </TouchableOpacity>
         
       </View>
+
   
       {/* Contenitore scrollabile */}
       <ScrollView contentContainerStyle={styles.container}>
