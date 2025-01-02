@@ -1,80 +1,135 @@
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import React, { useState } from 'react';
-import { Button, Image, StyleSheet, Platform, View } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-
+import React from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, useColorScheme, Image } from 'react-native';
+import { useAppContext } from '../_layout'; // Percorso al file RootLayout
+import { Event } from '@/components/models/event';
 
 export default function HomeScreen() {
-  const [eventType, setEventType] = useState('Adventure');
-  return (
+    const { allEvents } = useAppContext(); // Ottieni la lista di eventi dal context
+    const colorScheme = useColorScheme(); // Rileva se è light o dark mode
+    const styles = colorScheme === 'dark' ? darkStyles : lightStyles; // Cambia gli stili dinamicamente
 
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Meow</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-      <Button title="Open Camera" />
-    </ParallaxScrollView>
+    console.log('[HomeScreen] Eventi disponibili:', allEvents);
 
-  );
+    // Funzione per renderizzare ogni evento nella FlatList
+    const renderEvent = ({ item }: { item: Event }) => {
+        console.log(`[RenderEvent] Rendering evento: ${item.name}`);
+        return (
+            <TouchableOpacity
+                style={styles.eventCard}
+                onPress={() => console.log(`[RenderEvent] Hai cliccato su: ${item.city}`)}
+            >
+                <View>
+                    <Text style={styles.eventName}>{item.name.toUpperCase()}</Text>
+                    <Text style={styles.eventDetails}>Today {item.hour}  |  {item.city}</Text>
+                </View>
+                {item.local_legend_here && ( // Mostra l'immagine solo se local_legend_here è true
+                    <Image source={require('@/assets/images/LL.png')} style={styles.eventImage} />
+                )}
+            </TouchableOpacity>
+        );
+    };
+
+    return (
+        <View style={styles.container}>
+            <FlatList
+                data={allEvents}
+                renderItem={renderEvent}
+                keyExtractor={(item, index) => index.toString()} // Usa un indice come chiave
+                contentContainerStyle={styles.listContent}
+                ListEmptyComponent={<Text style={styles.emptyText}>Nessun evento disponibile</Text>} // Caso lista vuota
+            />
+        </View>
+    );
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+const lightStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        paddingHorizontal: 10,
+        paddingTop: 50,
+    },
+    listContent: {
+        paddingVertical: 10,
+    },
+    eventCard: {
+        backgroundColor: '#f9f9f9',
+        padding: 20, // Ingrandito
+        marginVertical: 5, // Spaziatura tra elementi aumentata
+        borderRadius: 15,
+        borderColor: '#ddd',
+        borderWidth: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: 85, // Fissa l'altezza della card
+    },
+    eventName: {
+        fontSize: 18, 
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    eventDetails: {
+        marginTop: 3,
+        fontSize: 14,
+        color: '#666',
+    },
+    eventImage: {
+        width: 80, // Dimensione icona
+        height: 70,
+        resizeMode: 'contain',
+      
+    },
+    emptyText: {
+        textAlign: 'center',
+        color: '#666',
+        marginTop: 20,
+        fontSize: 16,
+    },
+});
+
+// Stili per Modalità Dark
+const darkStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#121212',
+        paddingHorizontal: 10,
+        paddingTop: 50,
+    },
+    listContent: {
+        paddingVertical: 10,
+    },
+    eventCard: {
+        backgroundColor: '#1E1E1E',
+        padding: 20, // Ingrandito
+        marginVertical: 5, // Spaziatura tra elementi aumentata
+        borderRadius: 15,
+        borderColor: '#333',
+        borderWidth: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: 85, 
+    },
+    eventName: {
+        fontSize: 18, // Ingrandito
+        fontWeight: 'bold',
+        color: '#fff',
+    },
+    eventDetails: {
+        fontSize: 14,
+        color: '#bbb',
+        marginTop: 3,
+    },
+    eventImage: {
+        width: 80, // Dimensione icona
+        height: 70,
+        resizeMode: 'contain',
+    },
+    emptyText: {
+        textAlign: 'center',
+        color: '#bbb',
+        marginTop: 20,
+        fontSize: 16,
+    },
 });

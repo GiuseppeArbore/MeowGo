@@ -16,6 +16,11 @@ const MAPPING = {
   'list.number': 'list-ol',
   'person.crop.circle' : 'account-circle',
   'line.3.horizontal.decrease' : 'filter',
+  'star.fill': 'star',
+  'clock': 'schedule',
+  'location.fill': 'location-on',
+  'people': 'group',
+  'map': 'map',
 
 } as unknown as Partial<
   Record<

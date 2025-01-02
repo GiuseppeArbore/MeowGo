@@ -10,7 +10,7 @@ export class Event {
     creator: string;    //username del creatore
     place: string;
     local_legend_here: boolean;
-    secred_code: string;
+    secret_code: string;
     type: string;
     city: string;
 
@@ -26,7 +26,7 @@ export class Event {
         this.creator = creator;
         this.place = place;
         this.local_legend_here = local_legend_here;
-        this.secred_code = secred_code;
+        this.secret_code = secred_code;
         this.type = type;
         this.city = city;
     }
