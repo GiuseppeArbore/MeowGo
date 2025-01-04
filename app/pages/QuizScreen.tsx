@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useColorScheme, Alert } from 'react-native';
 import { useAppContext } from '../_layout';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 import { User } from '@/components/models/user';
+import { router, Stack } from 'expo-router';
 
 const cities = ['Bari', 'Turin']; // Elenco delle città disponibili
 const quizData: Record<string, { question: string; options: string[]; correctAnswer: string }[]> = {
@@ -51,9 +52,9 @@ const QuizSelectionScreen: React.FC = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const styles = createStyles(isDarkMode);
-  const router = useRouter();
+  const navigation = useNavigation();
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-
+  
   useEffect(() => {
     const fetchAvailableCities = async () => {
       if (db && user) {
@@ -96,8 +97,17 @@ const handleNextQuestion = async () => {
           // Esegui l'inserimento nel database
           if (selectedCity) {
             
-          user.local_legend_for.push(selectedCity);
-          setUser(user);
+            const updatedUser = new User(
+              user.username,
+              user.password,
+              user.name,
+              user.surname,
+              user.birthdate,
+              [...user.local_legend_for, selectedCity], // Aggiorniamo l'array
+              user.taralli
+            );
+            setUser(updatedUser); // Passa il nuovo oggetto di tipo User
+
           const result = await db.runAsync(
             `INSERT INTO users_ll_for (username, city) VALUES (?, ?)`,
             [user.username, selectedCity]
@@ -143,7 +153,9 @@ const handleNextQuestion = async () => {
   }
 };
 
-  
+  useEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, []);
 if (selectedCity) {
   const questions = quizData[selectedCity];
   const currentQuestion = questions[currentQuestionIndex];
@@ -157,7 +169,7 @@ if (selectedCity) {
           key={option}
           style={[
             styles.optionButton,
-            selectedAnswer === option && { backgroundColor: isDarkMode ? '#555' : '#87CEEB' },
+            selectedAnswer === option && { backgroundColor: isDarkMode ? '#555' : '#C8C8CA' },
           ]}
           onPress={() => handleAnswerSelection(option)}
           disabled={selectedAnswer !== null} // Disabilita i pulsanti se una risposta è stata selezionata
@@ -210,7 +222,8 @@ const createStyles = (isDarkMode: boolean) =>
   StyleSheet.create({
     container: {
       flexGrow: 1,
-      backgroundColor: isDarkMode ? '#000' : '#A1CEDC',
+      flex: 1,
+      justifyContent: 'center',
       padding: 16,
     },
     header: {
@@ -221,7 +234,8 @@ const createStyles = (isDarkMode: boolean) =>
       fontSize: 28,
       fontWeight: 'bold',
       color: isDarkMode ? '#fff' : '#000',
-      marginTop: 40,
+      marginBottom: 16,
+      textAlign: 'center',
     },
     cityContainer: {
       backgroundColor: isDarkMode ? '#222' : '#fff',
@@ -234,20 +248,20 @@ const createStyles = (isDarkMode: boolean) =>
       elevation: 3,
     },
     cityButton: {
-      backgroundColor: isDarkMode ? '#444' : '#1E90FF',
+      backgroundColor: isDarkMode ? '#444' : '#E3E3E4',
       padding: 12,
       borderRadius: 8,
       marginBottom: 16,
       alignItems: 'center',
     },
     cityButtonText: {
-      color: '#fff',
+      color: isDarkMode ? '#fff' : '#000',
       fontSize: 18,
       fontWeight: 'bold',
     },
     noCitiesText: {
       fontSize: 16,
-      color: isDarkMode ? '#aaa' : '#555',
+      color: isDarkMode ? '#fff' : '#000',
       textAlign: 'center',
     },
     question: {
@@ -257,26 +271,27 @@ const createStyles = (isDarkMode: boolean) =>
       textAlign: 'center',
     },
     optionButton: {
-      backgroundColor: isDarkMode ? '#444' : '#1E90FF',
+      backgroundColor: isDarkMode ? '#444' : '#e3e3e4',
       padding: 12,
       borderRadius: 8,
       marginBottom: 12,
       alignItems: 'center',
     },
     optionText: {
-      color: '#fff',
+      color: isDarkMode ? '#fff' : '#000',
       fontSize: 16,
     },
     nextButton: {
-      backgroundColor: isDarkMode ? '#444' : '#1E90FF',
+      backgroundColor: isDarkMode ? '#444' : '#e3e3e4',
       padding: 12,
       borderRadius: 8,
       marginTop: 16,
       alignItems: 'center',
     },
     nextButtonText: {
-      color: '#fff',
+      color: isDarkMode ? '#fff' : '#000',
       fontSize: 18,
       fontWeight: 'bold',
     },
   });
+

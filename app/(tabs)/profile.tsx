@@ -29,7 +29,6 @@ const ProfileScreen: React.FC = () => {
   useEffect(() => {
     const fetchLocalLegendCities = async () => {
       if (db && user) {
-        setUser(user);
         console.log(user);
         const ll = user.local_legend_for
         console.log("Local",ll);
@@ -166,28 +165,26 @@ const createStyles = (isDarkMode: boolean, contentPaddingTop: number, headerHeig
   StyleSheet.create({
     container: {
       flexGrow: 1,
-      backgroundColor: isDarkMode ? '#000' : '#A1CEDC',
       padding: 16,
-      marginTop: headerHeight, // Aggiungi margine per lasciare spazio all'heade
+      marginTop: headerHeight, 
     },
     header: {
       height: headerHeight,
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',
-      position: 'absolute', // Posizionato sopra il contenuto principale
-      top: 0, // Allineato alla parte superiore
+      position: 'absolute', 
+      top: 0, 
       left: 0,
       right: 0,
-      backgroundColor: isDarkMode ? '#000' : '#A1CEDC', // Sfondo dinamico
-      zIndex: 10, // Garantisce che l'header rimanga sopra
-      paddingVertical: 1, // Margine interno verticale
+      zIndex: 10, 
+      paddingVertical: 1, 
       textAlign: 'center', // Allineamento del titolo
     },
     title: {
       fontSize: 28,
       fontWeight: 'bold',
-      color: isDarkMode ? '#fff' : '#fff',
+      color: isDarkMode ? '#fff' : '#333',
       alignItems: 'center', // Nuova proprietà per centrare la scritta
       justifyContent: 'center', // Nuova proprietà per centrare la scritta
       marginLeft: 10, // Aggiunto margine a sinistra del titolo
@@ -251,7 +248,7 @@ const createStyles = (isDarkMode: boolean, contentPaddingTop: number, headerHeig
       borderColor: isDarkMode ? '#444' : '#ccc', // Bordo dinamico
     },
     tarallo: {
-      backgroundColor: isDarkMode ? '#444' : '#1E90FF', // Colore dinamico
+      backgroundColor: isDarkMode ? '#444' : '#e3e3e4', // Colore dinamico
       borderRadius: 16,
       width: 32,
       height: 32,
@@ -259,16 +256,18 @@ const createStyles = (isDarkMode: boolean, contentPaddingTop: number, headerHeig
       alignItems: 'center',
       marginLeft: 3,
       borderWidth: 1,
-      borderColor: isDarkMode ? '#444' : '#ccc', // Colore dinamico del bordo
+      borderColor: isDarkMode ? '#444' : '#ccc', // Colore dinamico
     },
     taralloText: {
       fontSize: 16,
-      color: isDarkMode ? '#fff' : '#fff',
+      color: isDarkMode ? '#fff' : '#333',
       textAlign: 'left',
     },
     taralliContainer: {
       flexDirection: 'row',
       alignItems: 'center', // Allineato verticalmente al centro
+      borderWidth: 1,
+      borderColor: isDarkMode ? '#444' : '#ccc', // Colore dinamico
       justifyContent: 'flex-start', // Allineato orizzontalmente al centro
       borderRadius: 8, // Bordo arrotondato come gli altri container
       padding: 12, // Padding per uniformare l'aspetto
@@ -283,8 +282,10 @@ const createStyles = (isDarkMode: boolean, contentPaddingTop: number, headerHeig
       marginLeft: 10, // Aggiunto margine a sinistra
     },
     buttonContainer: {
-      backgroundColor: isDarkMode ? '#002244' : '#002244', // Colore dinamico
+      backgroundColor: isDarkMode ? '#002244' : '#e3e3e4', // Colore dinamico
       borderRadius: 8,
+      borderWidth: 1,
+      borderColor: isDarkMode ? '#444' : '#ccc', // Colore dinamico
       overflow: 'hidden',
       alignItems: 'center',
       padding: 12,
@@ -292,7 +293,7 @@ const createStyles = (isDarkMode: boolean, contentPaddingTop: number, headerHeig
     button: {
       fontSize: 18,
       fontWeight: '600',
-      color: isDarkMode ? '#fff' : '#fff',
+      color: isDarkMode ? '#fff' : '#333',
       textAlign: 'center',
       width: 'auto', // Larghezza fissa del bottone
       flexShrink: 1, // Riduce la larghezza se è più larga dello spazio disponibile
