@@ -10,7 +10,7 @@ const ProfileScreen: React.FC = () => {
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
-  const eventsCreated = 
+  
 
   const colors = {
     background: isDarkMode ? '#1C1C1C' : '#FFFFFF',
