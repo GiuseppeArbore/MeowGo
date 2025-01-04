@@ -6,11 +6,12 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 
 
 const ProfileScreen: React.FC = () => {
-  const { user,  } = useAppContext();
+  const { user, allEvents } = useAppContext();
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
-  
+  const nEventsCreated = allEvents.filter((ev) => ev.creator === user?.username).length;
+
 
   const colors = {
     background: isDarkMode ? '#1C1C1C' : '#FFFFFF',
@@ -22,18 +23,26 @@ const ProfileScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Mostrare il nome dell'utente in alto */}
-      <Text style={styles.userName}>{user?.name + " " + user?.surname}</Text>
+      <View style={styles.userContainer}>
+        <Image
+          source={require('@/assets/images/peppe.jpeg')} // Un'immagine avatar o un'icona
+          style={styles.userAvatar}
+        />
+        <Text style={styles.userName}>{user?.name + " " + user?.surname}</Text>
+      </View>
 
       {/* Card per le città */}
       <View style={styles.cardFullWidth}>
-        <Text style={styles.title}>Your local legend cities </Text>
-        <FlatList
-          data={user?.local_legend_for}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <Text style={styles.cityText}>{item}</Text>
-          )}
-        />
+        {user?.local_legend_for.length > 0 ?
+          (<><Text style={styles.title}>Your local legend cities </Text>
+            <FlatList
+              data={user?.local_legend_for}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <Text style={styles.cityText}>{item}</Text>
+              )}
+            /></>)
+          : <Text style={styles.infoItalicText}>You're not a Local Legend yet</Text>}
         <Button
           title="Add city"
           onPress={() => {
@@ -47,27 +56,41 @@ const ProfileScreen: React.FC = () => {
       <View style={styles.cardTwoColumns}>
         <View style={styles.cardEventsJoined}>
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>Events completed</Text>
+            <Text style={styles.title}>{'Events\ncompleted'}</Text>
           </View>
           <IconSymbol size={65} name="checklist.checked" color={colors.text} />
           <View style={styles.infoContainer}>
-          <Text style={styles.infoText}>{user?.taralli} events</Text>
+            <Text style={styles.infoText}>{user?.taralli} events</Text>
           </View>
         </View>
 
-        <View style={styles.cardTaralli}>
+        <View style={styles.cardEventsCreated}>
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>Taralli</Text>
+            <Text style={styles.title}>{'Events \n created'}</Text>
           </View>
-          <View style={styles.iconContainer}>
-            <Image
-              source={require('@/assets/images/tarallo.jpg')}
-              style={styles.taralloIcon} />
-          </View>
+          <IconSymbol size={65} name="plus.circle" color={colors.text} />
           <View style={styles.infoContainer}>
-          <Text style={styles.infoText}>{user?.taralli} taralli</Text>
+            <Text style={styles.infoText}>{nEventsCreated} events</Text>
           </View>
         </View>
+      </View>
+
+      <View style={styles.cardFullWidth}>
+        <Text style={styles.title}>Taralli</Text>
+        <View style={styles.iconContainer}>
+          <Image
+            source={require('@/assets/images/tarallo.jpg')}
+            style={styles.taralloIcon} />
+        </View>
+
+        <View style={styles.infoContainer}>
+          <Text style={styles.infoText}>{user?.taralli} taralli</Text>
+        </View>
+
+        <Text style={styles.infoItalicText}>
+          Ogni evento a cui partecipi ottieni un tarallo.
+          Più taralli hai, più amici avrai!</Text>
+
       </View>
     </View>
   );
@@ -81,11 +104,21 @@ const styles = StyleSheet.create({
     padding: 16,
     marginTop: 60
   },
+  userContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  userAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
   userName: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 30,
-    textAlign: 'center',
+    
   },
   iconContainer: {
     alignItems: 'center',
@@ -130,7 +163,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 8,
   },
-  cardTaralli: {
+  cardEventsCreated: {
     alignItems: 'center',
     backgroundColor: '#fff',
     padding: 16,
@@ -154,5 +187,9 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 16,
+  },
+  infoItalicText: {
+    fontSize: 16,
+    fontStyle: 'italic',
   },
 });
