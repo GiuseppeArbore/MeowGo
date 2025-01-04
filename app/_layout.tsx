@@ -95,7 +95,7 @@ export default function RootLayout() {
       const users = await db.getAllAsync('SELECT * FROM users');
       const events = await db.getAllAsync('SELECT * FROM events');
       setAllUsers(users.map((user: any) => new User(user.username, user.password, user.name, user.surname, user.birthdate)));
-      setAllEvents(events.map((event: any) => new Event(event.name, event.location, event.latitude, event.longitude, event.date, event.description, event.hour, event.max_people, event.creator, event.place, event.local_legend_here, event.secred_code, event.type, event.string)));
+      setAllEvents(events.map((event: any) => new Event(event.name, event.location, event.latitude, event.longitude, event.date, event.description, event.hour, event.max_people, event.creator, event.place, event.local_legend_here, event.secret_code, event.type, event.city)));
     }
     fetchData();
   }, []);
