@@ -21,11 +21,13 @@ const MAPPING = {
   'clock' : 'access-time',
   'location': 'location-on',
   'xmark' : 'close',
-  'star.fill': 'star',
-  'clock': 'schedule',
+  'star': 'star-border',
   'location.fill': 'location-on',
-  'people': 'group',
+  'person.2': 'people-outline',
   'map': 'map',
+  'figure.run' : 'directions-run',
+  'sun.min' : 'sunny',
+  'house.lodge' : 'home'
 
 } as unknown as Partial<
   Record<

@@ -104,14 +104,16 @@ const TabThreeScreen: React.FC = () => {
             </View>
             <View style={styles.segmentedControlContainer}>
                 <SegmentedControl
-                    values={['Lista', 'Mappa']}
+                    values={['List', 'Map']}
                     selectedIndex={selectedView}
                     onChange={event => setSelectedView(event.nativeEvent.selectedSegmentIndex)}
                 />
             </View>
 
             {selectedView === 0 ? (
+                <View style={styles.mapContainer}>
                 <EventList />
+                </View>
             ) : (
                 <View style={styles.mapContainer}>
                     {/* Barra filtri scrollabile */}

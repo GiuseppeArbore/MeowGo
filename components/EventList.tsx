@@ -15,15 +15,20 @@ const liststyles  = (colorScheme: string) => StyleSheet.create({
     listcontainer: {
         flex: 1,
         backgroundColor: colorScheme === 'dark' ? '#121212' : '#fff',
-        paddingHorizontal: 10,
+    },
+    textContainer: {
+        flex: 1, // Occupa tutto lo spazio disponibile
+        marginRight: 10, // Aggiunge spazio tra il testo e l'immagine
     },
     listContent: {
         paddingVertical: 10,
+        marginHorizontal: 10,
+        paddingHorizontal: 10,
     },
     eventCard: {
         backgroundColor: colorScheme === 'dark' ? '#1E1E1E' : '#f9f9f9',
         padding: 20, // Ingrandito
-        marginVertical: 5, // Spaziatura tra elementi aumentata
+        marginVertical: 10, // Spaziatura tra elementi aumentata
         borderRadius: 15,
         borderColor: colorScheme === 'dark' ? '#333' : '#ddd',
         borderWidth: 1,
@@ -43,8 +48,8 @@ const liststyles  = (colorScheme: string) => StyleSheet.create({
         color: colorScheme === 'dark' ? '#bbb' : '#666',
     },
     eventImage: {
-        width: 80, // Dimensione icona
-        height: 70,
+        width: 40, // Dimensione icona
+        height: 40,
         resizeMode: 'contain',
     },
     emptyText: {
@@ -69,7 +74,7 @@ export function EventList() {
                     style={currentListStyles.eventCard}
                     onPress={() => console.log(`[RenderEvent] Hai cliccato su: ${item.city}`)}
                 >
-                    <View>
+                    <View style={currentListStyles.textContainer}>
                         <Text style={currentListStyles.eventName}>{item.name.toUpperCase()}</Text>
                         <Text style={currentListStyles.eventDetails}>Today {item.hour}  |  {item.city} - {item.location} </Text>
                     </View>

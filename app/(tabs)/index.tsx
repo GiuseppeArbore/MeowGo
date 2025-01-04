@@ -75,10 +75,9 @@ const lightStyles = StyleSheet.create({
         color: '#666',
     },
     eventImage: {
-        width: 80, // Dimensione icona
-        height: 70,
+        width: 40, // Dimensione icona
+        height: 40,
         resizeMode: 'contain',
-      
     },
     emptyText: {
         textAlign: 'center',

@@ -40,13 +40,14 @@ const EventDetailsPopup: React.FC<EventDetailsPopupProps> = ({
             flex: 1,
             backgroundColor: colors.overlay,
             justifyContent: 'center',
+            alignItems: 'center'
         },
         modal: {
             backgroundColor: colors.background,
             borderRadius: 20,
             paddingTop: 20,
             marginLeft: 20,
-            width: '90%',
+            width: '80%',
             alignItems: 'center',
             marginHorizontal: 20,
         },
@@ -117,27 +118,31 @@ const EventDetailsPopup: React.FC<EventDetailsPopupProps> = ({
                         <View>
                             {event.local_legend_here && (
                                 <View style={styles.row}>
-                                    <IconSymbol name="house.fill" size={20} color={colors.text} />
+                                    <IconSymbol name="star" size={20} color={colors.text} />
                                     <Text style={styles.rowText}>There is a local legend here</Text>
                                 </View>
                             )}
                             <View style={styles.row}>
-                                <IconSymbol name="paperplane.fill" size={20} color={colors.text} />
+                                <IconSymbol name="clock" size={20} color={colors.text} />
                                 <Text style={styles.rowText}>Today - {event.hour}</Text>
                             </View>
                             <View style={styles.row}>
-                                <IconSymbol name="person.crop.circle" size={20} color={colors.text} />
+                                <IconSymbol name="location" size={20} color={colors.text} />
                                 <Text style={styles.rowText}>
                                     {event.city} - {event.location}
                                 </Text>
                             </View>
                             <View style={styles.row}>
-                                <IconSymbol name="list.number" size={20} color={colors.text} />
+                                <IconSymbol name="person.2" size={20} color={colors.text} />
                                 <Text style={styles.rowText}>{event.max_people}</Text>
                             </View>
                             <View style={styles.row}>
-                                <IconSymbol name="chevron.right" size={20} color={colors.text} />
+                                <IconSymbol name="figure.run" size={20} color={colors.text} />
                                 <Text style={styles.rowText}>{event.type}</Text>
+                            </View>
+                            <View style={styles.row}>
+                                <IconSymbol name={event.place === "Outside" ? "sun.min" : "house.lodge"} size={20} color={colors.text} />
+                                <Text style={styles.rowText}>{event.place}</Text>
                             </View>
                         </View>
 
