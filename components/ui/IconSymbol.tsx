@@ -21,6 +21,7 @@ const MAPPING = {
   'clock' : 'access-time',
   'location': 'location-on',
   'xmark' : 'close',
+  'checklist.checked' : 'checklist'
 
 } as unknown as Partial<
   Record<
