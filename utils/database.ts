@@ -67,6 +67,7 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
         DROP TABLE IF EXISTS "events";
         DROP TABLE IF EXISTS "users_ll_for";
         DROP TABLE IF EXISTS "users_events";
+        DROP TABLE IF EXISTS "icebreakers";
         DROP TABLE IF EXISTS "todos";
         CREATE TABLE "users" (
           "username"	TEXT NOT NULL,
@@ -108,6 +109,12 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
           FOREIGN KEY("event") REFERENCES "events"("name") ON DELETE CASCADE,
           FOREIGN KEY("user") REFERENCES "users"("username") ON DELETE CASCADE
         );
+        CREATE TABLE "icebreakers" (
+          "name" TEXT NOT NULL,
+          "description" TEXT NOT NULL,
+          "rules" TEXT NOT NULL,
+          PRIMARY KEY("name")
+        );
       `);
   
       await db.runAsync(`INSERT INTO "users" ("username","password","name","surname","birthdate","taralli")
@@ -132,7 +139,16 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
                ('Pio','Karaoke & Beer');
   
       `);
-  
+      await db.runAsync(`INSERT INTO "icebreakers" ("name","description","rules")
+        VALUES ('We are not really strangers',
+        'We Are Not Really Strangers is a card-based game designed to deepen connections and foster meaningful conversations. 
+          It features thought-provoking questions and prompts, encouraging players to share personal stories, reflections, and emotions.','Regole1'),
+              ('Heads up!','Heads Up is a fun and fast-paced party game where players take turns guessing words or phrases displayed on a card or device held on their forehead. 
+        Other players give clues by acting, describing, or making sounds to help them guess before the timer runs out. ','Regole2'),
+              ('Never have I ever','Two Truths and a Lie is a classic icebreaker game where players share three statements about themselves: two truths and one lie.','Regole3'),
+              ('Truth or dare','Never Have I Ever is a popular party game where players take turns sharing things they have never done.r','Regole4');
+      `);
+      
   
       await loadDatabase();
   
