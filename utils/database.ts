@@ -120,11 +120,12 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
       await db.runAsync(`INSERT INTO "users" ("username","password","name","surname","birthdate","taralli")
         VALUES ('Peppe','password','Giuseppe','Arbore','2001-10-11',10),
                 ('Caca','password','Claudia','Maggiulli','2002-03-26',0),
-                ('Pio','password','Michele Pio','Mucci','1999-12-26',3);
+                ('Pio','password','Michelepio','Mucci','1999-12-26',3);
       `);
       await db.runAsync(`INSERT INTO "events" ("name","location","latitude","longitude","date","hour","max_people","creator","place","local_legend_here","secret_code","type","city","ended") 
         VALUES ('Boat trip','Murazzi','45.05985','7.692342','23-12-2024','16:00',10,'Peppe','Outside','true',13,'Adventure','Turin',NULL),
-            ('Karaoke & Beer','Il Cantinone','45.064005','7.694438','2025-01-22','20:00',8,'Peppe','Inside','true',45,'Social','Turin','');  
+            ('Karaoke & Beer','Il Cantinone','45.064005','7.694438','2025-01-22','20:00',8,'Peppe','Inside','true',45,'Social','Turin',''); 
+            ('Polito Party','Politecnico','45.06236','7.66257','2025-01-22','20:00',8,'Peppe','Inside','true',45,'Social','Turin',''); 
       `);
   
       await db.runAsync(`INSERT INTO "users_ll_for" ("username","city")
@@ -137,6 +138,8 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
               ('Peppe','Karaoke & Beer'),
               ('Caca','Boat trip');
                ('Pio','Karaoke & Beer');
+               ('Pio','Polito Party');
+               ('Peppe','Polito Party');
   
       `);
       await db.runAsync(`INSERT INTO "icebreakers" ("name","description","rules")
