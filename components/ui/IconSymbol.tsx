@@ -21,7 +21,9 @@ const MAPPING = {
   'clock' : 'access-time',
   'location': 'location-on',
   'xmark' : 'close',
-  'checklist.checked' : 'checklist'
+  'checklist.checked' : 'checklist',
+  'plus.circle' : 'add-circle-outline',
+  'globe.europe.africa' : 'language',
 
 } as unknown as Partial<
   Record<
