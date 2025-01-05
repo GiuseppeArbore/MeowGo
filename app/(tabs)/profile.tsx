@@ -8,6 +8,11 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 const ProfileScreen: React.FC = () => {
   const { user, allEvents } = useAppContext();
 
+  const userImages: { [key: string]: any } = {
+    Peppe: require('@/assets/images/Peppe.jpg'),
+    Pio: require('@/assets/images/Pio.jpg'),
+  };
+
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const nEventsCreated = allEvents.filter((ev) => ev.creator === user?.username).length;
@@ -25,7 +30,7 @@ const ProfileScreen: React.FC = () => {
       {/* Mostrare il nome dell'utente in alto */}
       <View style={styles.userContainer}>
         <Image
-          source={require('@/assets/images/peppe.jpeg')} // Un'immagine avatar o un'icona
+          source={user?.username ? userImages[user.username] || require('@/assets/images/null.jpg') : require('@/assets/images/null.jpg')}
           style={styles.userAvatar}
         />
         <Text style={styles.userName}>{user?.name + " " + user?.surname}</Text>
@@ -118,7 +123,7 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 28,
     fontWeight: 'bold',
-    
+
   },
   iconContainer: {
     alignItems: 'center',
