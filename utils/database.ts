@@ -124,8 +124,8 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
       `);
       await db.runAsync(`INSERT INTO "events" ("name","location","latitude","longitude","date","hour","max_people","creator","place","local_legend_here","secret_code","type","city","ended") 
         VALUES ('Boat trip','Murazzi','45.05985','7.692342','23-12-2024','16:00',10,'Peppe','Outside','true',13,'Adventure','Turin',NULL),
-            ('Karaoke','Il Cantinone','45.064005','7.694438','2025-01-22','20:00',8,'Peppe','Inside','true',45,'Social','Turin',''); 
-            ('Polito Party','Politecnico','45.06236','7.66257','2025-01-22','20:00',8,'Peppe','Inside','true',45,'Social','Turin',''); 
+            ('Karaoke','Il Cantinone','45.064005','7.694438','2025-01-22','20:00',8,'Peppe','Inside','true',45,'Social','Turin',''), 
+            ('Polito Party','Politecnico','45.06236','7.66257','2025-01-22','20:00',8,'Pio','Inside','false',45,'Social','Turin',''); 
       `);
   
       await db.runAsync(`INSERT INTO "users_ll_for" ("username","city")
