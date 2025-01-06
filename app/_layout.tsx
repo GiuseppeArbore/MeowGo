@@ -122,9 +122,8 @@ export default function RootLayout() {
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} initialParams={{ allEvents, allUsers, myEvents }}
               />
-
+              <Stack.Screen name="eventPageDetails" initialParams={{ eventId: null }} />
               <Stack.Screen name="+not-found" />
-              <Stack.Screen name="filter" options={{ presentation: 'transparentModal', headerShown: false }} />
               <Stack.Screen name="search" options={{ presentation: 'transparentModal', headerShown: false }} />
             </Stack>
             <StatusBar style="auto" />

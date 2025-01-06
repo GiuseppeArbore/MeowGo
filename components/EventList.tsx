@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, useColorScheme, Alert, FlatList, Image } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Linking } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { DATABASE_NAME } from '../utils/database';
 import { Event } from  '../components/models/event';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { useAppContext } from '@/app/_layout';
+
+
 
 const liststyles  = (colorScheme: string) => StyleSheet.create({
 
@@ -72,7 +74,8 @@ export function EventList() {
             return (
                 <TouchableOpacity
                     style={currentListStyles.eventCard}
-                    onPress={() => console.log(`[RenderEvent] Hai cliccato su: ${item.city}`)}
+
+                    onPress={() => router.push(`/eventPageDetails?eventId=${item.name}`)}
                 >
                     <View style={currentListStyles.textContainer}>
                         <Text style={currentListStyles.eventName}>{item.name.toUpperCase()}</Text>

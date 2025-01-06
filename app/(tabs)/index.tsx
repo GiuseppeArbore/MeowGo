@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, useColorScheme, Image } from 'react-native';
 import { useAppContext } from '../_layout'; // Percorso al file RootLayout
 import { Event } from '@/components/models/event';
+import { router } from 'expo-router';
 
 export default function HomeScreen() {
     const { allEvents } = useAppContext(); // Ottieni la lista di eventi dal context
@@ -16,7 +17,7 @@ export default function HomeScreen() {
         return (
             <TouchableOpacity
                 style={styles.eventCard}
-                onPress={() => console.log(`[RenderEvent] Hai cliccato su: ${item.city}`)}
+                onPress={() => router.push(`/eventPageDetails?eventId=${item.name}`)}
             >
                 <View>
                     <Text style={styles.eventName}>{item.name.toUpperCase()}</Text>
@@ -65,7 +66,7 @@ const lightStyles = StyleSheet.create({
         height: 85, // Fissa l'altezza della card
     },
     eventName: {
-        fontSize: 18, 
+        fontSize: 18,
         fontWeight: 'bold',
         color: '#333',
     },
@@ -108,7 +109,7 @@ const darkStyles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        height: 85, 
+        height: 85,
     },
     eventName: {
         fontSize: 18, // Ingrandito
