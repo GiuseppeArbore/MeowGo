@@ -67,6 +67,7 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
         DROP TABLE IF EXISTS "events";
         DROP TABLE IF EXISTS "users_ll_for";
         DROP TABLE IF EXISTS "users_events";
+        DROP TABLE IF EXISTS "icebreakers";
         DROP TABLE IF EXISTS "todos";
         CREATE TABLE "users" (
           "username"	TEXT NOT NULL,
@@ -108,16 +109,23 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
           FOREIGN KEY("event") REFERENCES "events"("name") ON DELETE CASCADE,
           FOREIGN KEY("user") REFERENCES "users"("username") ON DELETE CASCADE
         );
+        CREATE TABLE "icebreakers" (
+          "name" TEXT NOT NULL,
+          "description" TEXT NOT NULL,
+          "rules" TEXT NOT NULL,
+          PRIMARY KEY("name")
+        );
       `);
   
       await db.runAsync(`INSERT INTO "users" ("username","password","name","surname","birthdate","taralli")
         VALUES ('Peppe','password','Giuseppe','Arbore','2001-10-11',10),
                 ('Caca','password','Claudia','Maggiulli','2002-03-26',0),
-                ('Pio','password','Michele Pio','Mucci','1999-12-26',3);
+                ('Pio','password','Michelepio','Mucci','1999-12-26',3);
       `);
       await db.runAsync(`INSERT INTO "events" ("name","location","latitude","longitude","date","hour","max_people","creator","place","local_legend_here","secret_code","type","city","ended") 
         VALUES ('Boat trip','Murazzi','45.05985','7.692342','23-12-2024','16:00',10,'Peppe','Outside','true',13,'Adventure','Turin',NULL),
-            ('Karaoke & Beer','Il Cantinone','45.064005','7.694438','2025-01-22','20:00',8,'Peppe','Inside','true',45,'Social','Turin','');  
+            ('Karaoke & Beer','Il Cantinone','45.064005','7.694438','2025-01-22','20:00',8,'Peppe','Inside','true',45,'Social','Turin',''); 
+            ('Polito Party','Politecnico','45.06236','7.66257','2025-01-22','20:00',8,'Peppe','Inside','true',45,'Social','Turin',''); 
       `);
   
       await db.runAsync(`INSERT INTO "users_ll_for" ("username","city")
@@ -130,9 +138,20 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
               ('Peppe','Karaoke & Beer'),
               ('Caca','Boat trip');
                ('Pio','Karaoke & Beer');
+               ('Pio','Polito Party');
+               ('Peppe','Polito Party');
   
       `);
-  
+      await db.runAsync(`INSERT INTO "icebreakers" ("name","description","rules")
+        VALUES ('We are not really strangers',
+        'We Are Not Really Strangers is a card-based game designed to deepen connections and foster meaningful conversations. 
+          It features thought-provoking questions and prompts, encouraging players to share personal stories, reflections, and emotions.','Regole1'),
+              ('Heads up!','Heads Up is a fun and fast-paced party game where players take turns guessing words or phrases displayed on a card or device held on their forehead. 
+        Other players give clues by acting, describing, or making sounds to help them guess before the timer runs out. ','Regole2'),
+              ('Never have I ever','Two Truths and a Lie is a classic icebreaker game where players share three statements about themselves: two truths and one lie.','Regole3'),
+              ('Truth or dare','Never Have I Ever is a popular party game where players take turns sharing things they have never done.r','Regole4');
+      `);
+      
   
       await loadDatabase();
   

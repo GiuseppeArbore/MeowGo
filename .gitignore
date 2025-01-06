@@ -35,4 +35,7 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# android build - nel caso di expo run invece che export start vengono generati questi file
+*android
+
 app-example
