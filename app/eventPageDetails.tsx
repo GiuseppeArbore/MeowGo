@@ -3,25 +3,46 @@ import { StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import React from 'react';
+import { Event } from '@/components/models/event';
 import { useSearchParams } from 'expo-router/build/hooks';
 import { useAppContext } from './_layout';
+import { Button } from 'react-native';
+
 
 export default function EventDetailsScreen() {
   const searchParams = useSearchParams();
-  const eventId = searchParams.get('eventId');
+  const eventId : string = searchParams.get('eventId')!;
   const allEvents = useAppContext().allEvents;
-  const event = allEvents.find((e) => e.name === eventId);  //event. -> tutte le cose dell'evento
+  const [event, setEvent] = React.useState<Event | null>(null);
+  const e: Event = allEvents.find((e) => e.name === eventId)!;
+  React.useEffect(() => {
+    console.log('XXX EventDetailsScreen mounted');
+    console.log('XXX Event ID: ', eventId);
+    console.log('XXX All events: ', allEvents);
+    console.log('XXX Event: ', e);
+    if (e) {
+      setEvent(e);  //event. -> tutte le cose dell'evento
+      console.log(e);
+    }
+  }, [e]);
 
   return (
     <>
-      <Stack.Screen options={{ title: 'Event page: '.concat(event!.name) }} />
-      <ThemedView style={styles.container}>
-        <ThemedText type="subtitle">This screen exists.</ThemedText>
-        <ThemedText type="title">Event ID: {eventId}</ThemedText>
-        <Link href="/" style={styles.link}>
-          <ThemedText type="link">Go to home screen!</ThemedText>
-        </Link>
-      </ThemedView>
+      <Stack.Screen options={{ title: 'Event page: '.concat(eventId) }} />
+      {event === null ? (
+        <ThemedView style={styles.container}>
+          <ThemedText type="subtitle">Loading...</ThemedText>
+        </ThemedView>
+      ) : (
+        <ThemedView style={styles.container}>
+          <ThemedText type="subtitle">This screen exists.</ThemedText>
+          <ThemedText type="title">Event ID: {e.name}</ThemedText>
+          <Link href="/" style={styles.link}>
+            <ThemedText type="link">Go to home screen!</ThemedText>
+          </Link>
+        </ThemedView>
+      )}
+
     </>
   );
 }
