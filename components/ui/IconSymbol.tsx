@@ -24,6 +24,13 @@ const MAPPING = {
   'checklist.checked' : 'checklist',
   'plus.circle' : 'add-circle-outline',
   'globe.europe.africa' : 'language',
+  'star': 'star-border',
+  'location.fill': 'location-on',
+  'person.2': 'people-outline',
+  'map': 'map',
+  'figure.run' : 'directions-run',
+  'sun.min' : 'sunny',
+  'house.lodge' : 'home'
 
 } as unknown as Partial<
   Record<
