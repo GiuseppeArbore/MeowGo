@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, FlatList, Button, Image, useColorScheme, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Text, Button, Image, useColorScheme, SafeAreaView } from 'react-native';
 import { useAppContext } from '../_layout';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { useRouter } from 'expo-router';
 
 
 const ProfileScreen: React.FC = () => {
@@ -12,6 +13,7 @@ const ProfileScreen: React.FC = () => {
     Pio: require('@/assets/images/Pio.jpg'),
   };
 
+  const router = useRouter();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const nEventsCreated = allEvents.filter((ev) => ev.creator === user?.username).length;
@@ -126,10 +128,7 @@ const ProfileScreen: React.FC = () => {
           }
           <Button
             title="Add city"
-            onPress={() => {
-              // Funzione per aggiungere nuove città (da implementare)
-              alert('Funzione non implementata');
-            }}
+            onPress={() => router.push('../pages/QuizScreen')}
           />
         </View>
 
