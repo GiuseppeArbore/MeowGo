@@ -16,10 +16,6 @@ export default function EventDetailsScreen() {
   const [event, setEvent] = React.useState<Event | null>(null);
   const e: Event = allEvents.find((e) => e.name === eventId)!;
   React.useEffect(() => {
-    console.log('XXX EventDetailsScreen mounted');
-    console.log('XXX Event ID: ', eventId);
-    console.log('XXX All events: ', allEvents);
-    console.log('XXX Event: ', e);
     if (e) {
       setEvent(e);  //event. -> tutte le cose dell'evento
       console.log(e);
