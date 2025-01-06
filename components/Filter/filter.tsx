@@ -1,12 +1,14 @@
-import { StyleSheet, Text, View, Switch, TouchableOpacity, useColorScheme, TouchableWithoutFeedback, Platform } from 'react-native';
+import { StyleSheet, Text, View, Switch, TouchableOpacity, useColorScheme, TouchableWithoutFeedback, Platform, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
 import Slider from '@react-native-community/slider';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useNavigation } from '@react-navigation/native';
-import { useAppContext } from './_layout';
+import { useAppContext } from '../../app/_layout';
+import React from 'react';
 
-export default function Filter() {
+export function Filter() {
+  const [isModalVisible, setModalVisible] = useState<boolean>(false);
   const { filters, setFilters } = useAppContext();
   const [filtersTemp, setFiltersTemp] = useState({ ...filters }); 
   const [showPickerLocation, setShowPickerLocation] = useState(false);
@@ -162,21 +164,32 @@ export default function Filter() {
   };
 
   const handleCancel = () => {
-    navigation.goBack();
+    setModalVisible(false);
   };
 
   const handleApply = () => {
     console.log('Filters applied');
     setFilters(filtersTemp);
-    navigation.goBack();
+    setModalVisible(false);
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => {
-      if (!showPickerLocation && !showPickerEventType) {
-        navigation.goBack();
-      }
-    }}>
+    <>
+    {!isModalVisible && 
+    <TouchableOpacity onPress={() => setModalVisible(true)}>
+      <IconSymbol
+        size={28}
+        name="line.3.horizontal.decrease"
+        color={colorScheme === 'dark' ? '#FFF' : '#000'}
+      />
+    </TouchableOpacity>
+    }
+    <Modal 
+    visible={isModalVisible}
+    transparent={true}
+    animationType="fade"
+    onRequestClose={() => setModalVisible(false)}
+    >
       <View style={styles.overlay}>
 
         <View style={styles.modal}>
@@ -278,6 +291,7 @@ export default function Filter() {
           </View>
         </View>
       </View>
-    </TouchableWithoutFeedback>
+    </Modal>
+    </>
   );
 }

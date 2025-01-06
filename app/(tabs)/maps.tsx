@@ -6,6 +6,7 @@ import { Link, useNavigation } from 'expo-router';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Login_form } from '@/components/Login_form';
+import { Filter } from '@/components/Filter/filter';
 import { DATABASE_NAME } from '../../utils/database';
 import { Event } from '../../components/models/event';
 import { useAppContext } from '../_layout'; // Percorso al file RootLayout
@@ -93,13 +94,9 @@ const TabThreeScreen: React.FC = () => {
                 {/* Barra finta cliccabile */}   
                 <SearchBar/>
                 <TouchableOpacity style={styles.filterButton}>
-                    <Link href="/filter">
-                        <IconSymbol
-                            size={28}
-                            name="line.3.horizontal.decrease"
-                            color={colorScheme === 'dark' ? '#FFF' : '#000'}
-                        />
-                    </Link>
+                    <Filter />
+
+
                 </TouchableOpacity>
             </View>
             <View style={styles.segmentedControlContainer}>
