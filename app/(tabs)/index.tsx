@@ -3,11 +3,17 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, useColorScheme, Ima
 import { useAppContext } from '../_layout'; // Percorso al file RootLayout
 import { Event } from '@/components/models/event';
 import { router } from 'expo-router';
+import { formatDateTime } from '@/hooks/dateFormat';
 
 export default function HomeScreen() {
-    const { allEvents } = useAppContext(); // Ottieni la lista di eventi dal context
+    const { allEvents, myEvents } = useAppContext(); // Ottieni la lista di eventi dal context
     const colorScheme = useColorScheme(); // Rileva se è light o dark mode
     const styles = colorScheme === 'dark' ? darkStyles : lightStyles; // Cambia gli stili dinamicamente
+
+    //Filtra gli eventi per visualizzare solo quelli in myEvents
+    const filteredEvents = allEvents.filter((event: Event) =>
+        myEvents.includes(event.name) // Confronta con il nome dell'evento
+    );
 
     console.log('[HomeScreen] Eventi disponibili:', allEvents);
 
@@ -21,7 +27,7 @@ export default function HomeScreen() {
             >
                 <View>
                     <Text style={styles.eventName}>{item.name.toUpperCase()}</Text>
-                    <Text style={styles.eventDetails}>Today {item.hour}  |  {item.city}</Text>
+                    <Text style={styles.eventDetails}>{formatDateTime(item.date)}</Text>
                 </View>
                 {item.local_legend_here && ( // Mostra l'immagine solo se local_legend_here è true
                     <Image source={require('@/assets/images/LL.png')} style={styles.eventImage} />
@@ -33,7 +39,7 @@ export default function HomeScreen() {
     return (
         <View style={styles.container}>
             <FlatList
-                data={allEvents}
+                data={filteredEvents}
                 renderItem={renderEvent}
                 keyExtractor={(item, index) => index.toString()} // Usa un indice come chiave
                 contentContainerStyle={styles.listContent}

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { IconSymbol } from './ui/IconSymbol'; // Importa il tuo componente IconSymbol
 import { Event } from '@/components/models/event'; // Importa il modello Event
+import { formatDateTime } from '@/hooks/dateFormat';
 
 interface EventDetailsPopupProps {
     visible: boolean;
@@ -124,7 +125,7 @@ const EventDetailsPopup: React.FC<EventDetailsPopupProps> = ({
                             )}
                             <View style={styles.row}>
                                 <IconSymbol name="clock" size={20} color={colors.text} />
-                                <Text style={styles.rowText}>Today - {event.hour}</Text>
+                                <Text style={styles.rowText}>{formatDateTime(event.date)}</Text>
                             </View>
                             <View style={styles.row}>
                                 <IconSymbol name="location" size={20} color={colors.text} />

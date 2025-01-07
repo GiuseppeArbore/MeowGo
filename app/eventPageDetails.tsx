@@ -8,6 +8,7 @@ import { useSearchParams } from 'expo-router/build/hooks';
 import { useAppContext } from './_layout';
 import { Button } from 'react-native';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { formatDateTime } from '@/hooks/dateFormat';
 
 
 export default function EventDetailsScreen() {
@@ -81,7 +82,7 @@ export default function EventDetailsScreen() {
               )}
               <View style={styles.row}>
                 <IconSymbol name="clock" size={20} color={colors.text} />
-                <Text style={styles.rowText}>Today - {event.hour}</Text>
+                <Text style={styles.rowText}>{formatDateTime(event.date)}</Text>
               </View>
               <View style={styles.row}>
                 <IconSymbol name="location" size={20} color={colors.text} />

@@ -9,6 +9,7 @@ import { DATABASE_NAME } from '../utils/database';
 import { Event } from  '../components/models/event';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { useAppContext } from '@/app/_layout';
+import { formatDateTime } from '@/hooks/dateFormat';
 
 
 
@@ -71,6 +72,7 @@ export function EventList() {
 
     const renderListEvent = ({ item }: { item: Event }) => {
             console.log(`[RenderEvent] Rendering evento: ${item.name}`);
+            console.log(`LL for this event:  ${item.local_legend_here}`)
             return (
                 <TouchableOpacity
                     style={currentListStyles.eventCard}
@@ -79,7 +81,7 @@ export function EventList() {
                 >
                     <View style={currentListStyles.textContainer}>
                         <Text style={currentListStyles.eventName}>{item.name.toUpperCase()}</Text>
-                        <Text style={currentListStyles.eventDetails}>Today {item.hour}  |  {item.city} - {item.location} </Text>
+                        <Text style={currentListStyles.eventDetails}>{formatDateTime(item.date)} |  {item.city} - {item.location} </Text>
                     </View>
                     {item.local_legend_here && ( // Mostra l'immagine solo se local_legend_here è true
                         <Image source={require('@/assets/images/LL.png')} style={currentListStyles.eventImage} />
