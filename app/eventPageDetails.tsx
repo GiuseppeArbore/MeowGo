@@ -33,10 +33,10 @@ export default function EventDetailsScreen() {
   const colors = {
     background: isDarkMode ? '#1C1C1C' : '#FFFFFF',
     text: isDarkMode ? '#FFFFFF' : '#000000',
-    overlay: 'rgba(0, 0, 0, 0.5)',
+    cardBackground: isDarkMode ? '#2E2E2E' : '#ffffff',
     buttonBackground: isDarkMode ? '#2E2E2E' : '#E0E0E0',
-    rowText: isDarkMode ? '#CCCCCC' : '#555555',
-  };
+    buttonText: isDarkMode ? '#FFFFFF' : '#000000',
+  }
 
   const images = [
     require('@/assets/images/event1/event1_1.jpg'),
@@ -52,17 +52,103 @@ export default function EventDetailsScreen() {
     setCurrentImageIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : images.length - 1));
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 10,
+    },
+    headerRight: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    joinText: {
+      color: '#007AFF',
+      fontSize: 18,
+    },
+    eventName: {
+      fontSize: 28,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    card: {
+      flex: 1,
+      backgroundColor: colors.cardBackground,
+      borderRadius: 8,
+      marginTop: 10,
+      shadowColor: '#000',
+      shadowOpacity: 0.1,
+      shadowRadius: 5,
+      elevation: 3,
+    },
+    cardTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 10,
+      color: colors.text,
+    },
+    cardContent: {
+      fontSize: 15,
+      color: colors.text,
+      lineHeight: 25,
+    },
+    infoRow: {
+      marginTop: 10,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 10,
+    },
+    rowText: {
+      fontSize: 15,
+      marginLeft: 10,
+      color: colors.text
+    },
+    imageCarousel: {
+      position: 'relative',
+      alignItems: 'center',
+      height: 250,
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 8,
+    },
+    navButton: {
+      position: 'absolute',
+      top: '50%',
+      borderRadius: 20,
+      zIndex: 1,
+    },
+    navText: {
+      color: '#fff',
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+    rowContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    columnContainer: {
+      flex: 2,
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    },
+    taralloIcon: {
+      width: 60,
+      height: 65,
+    },
+  });
+
   return (
     <>
       <Stack.Screen
         options={{
           title: eventId,
+          headerTitleStyle: {
+            fontSize: 20,  // Aumenta la dimensione del font
+          },
           headerBackTitle: 'Back',
-          headerRight: () => (
-            <Text style={styles.joinText}>
-              {myEvents.includes(eventId) ? 'Leave' : 'Join'}
-            </Text>
-          ),
         }} />
       {event === null ? (
         <ThemedView style={styles.container}>
@@ -70,40 +156,71 @@ export default function EventDetailsScreen() {
         </ThemedView>
       ) : (
         <ScrollView style={styles.container}>
-          {/*Info sull'evento */}
-          <View style={[styles.card, { padding: 15 }]}>
-            <Text style={styles.cardTitle}>Info</Text>
-            <View style={styles.infoRow}>
-              {event.local_legend_here && (
-                <View style={styles.row}>
-                  <IconSymbol name="star" size={20} color={colors.text} />
-                  <Text style={styles.rowText}>There is a local legend here</Text>
+          <View style={styles.rowContainer}>
+            <View style={styles.columnContainer}>
+              {/* Status Card */}
+              <View style={[styles.card, { padding: 15, marginRight: 5 }]}>
+
+                <View style={{ alignItems: 'center' }}>
+                  <IconSymbol name={myEvents.includes(eventId) ? 'person.badge.minus' : 'person.badge.plus'}
+                    size={65}
+                    color={'#007AFF'}
+                  />
+                  <Text style={styles.joinText}>
+                    {myEvents.includes(eventId) ? 'Leave' : 'Join'}
+                  </Text>
                 </View>
-              )}
-              <View style={styles.row}>
-                <IconSymbol name="clock" size={20} color={colors.text} />
-                <Text style={styles.rowText}>{formatDateTime(event.date)}</Text>
               </View>
-              <View style={styles.row}>
-                <IconSymbol name="location" size={20} color={colors.text} />
-                <Text style={styles.rowText}>
-                  {event.city} - {event.location}
-                </Text>
-              </View>
-              <View style={styles.row}>
-                <IconSymbol name="person.2" size={20} color={colors.text} />
-                <Text style={styles.rowText}>{event.max_people}</Text>
-              </View>
-              <View style={styles.row}>
-                <IconSymbol name="figure.run" size={20} color={colors.text} />
-                <Text style={styles.rowText}>{event.type}</Text>
-              </View>
-              <View style={styles.row}>
-                <IconSymbol name={event.place === "Outside" ? "sun.min" : "house.lodge"} size={20} color={colors.text} />
-                <Text style={styles.rowText}>{event.place}</Text>
+
+              {/* Taralli Card */}
+              <View style={[styles.card, { padding: 15, marginRight: 5}]}>
+                <View style={{ alignItems: 'center' }}>
+                  <Image
+                    source={require('@/assets/images/tarallo.png')}
+                    style={[styles.taralloIcon, { tintColor: colors.text }]}
+                  />
+                  <Text style={{fontSize: 15, color: colors.text}}> 10 Taralli</Text>
+                </View>
               </View>
             </View>
+
+            {/*Info sull'evento */}
+            <View style={[styles.card, { padding: 15, flex: 3, marginLeft: 5,}]}>
+              <Text style={styles.cardTitle}>Info</Text>
+              <View style={styles.infoRow}>
+                {event.local_legend_here && (
+                  <View style={styles.row}>
+                    <IconSymbol name="star" size={20} color={colors.text} />
+                    <Text style={styles.rowText}>Local legend here</Text>
+                  </View>
+                )}
+                <View style={styles.row}>
+                  <IconSymbol name="clock" size={20} color={colors.text} />
+                  <Text style={styles.rowText}>{formatDateTime(event.date)}</Text>
+                </View>
+                <View style={styles.row}>
+                  <IconSymbol name="location" size={20} color={colors.text} />
+                  <Text style={styles.rowText}>
+                    {event.city} - {event.location}
+                  </Text>
+                </View>
+                <View style={styles.row}>
+                  <IconSymbol name="person.2" size={20} color={colors.text} />
+                  <Text style={styles.rowText}>{event.max_people}</Text>
+                </View>
+                <View style={styles.row}>
+                  <IconSymbol name="figure.run" size={20} color={colors.text} />
+                  <Text style={styles.rowText}>{event.type}</Text>
+                </View>
+                <View style={styles.row}>
+                  <IconSymbol name={event.place === "Outside" ? "sun.min" : "house.lodge"} size={20} color={colors.text} />
+                  <Text style={styles.rowText}>{event.place}</Text>
+                </View>
+              </View>
+            </View>
+
           </View>
+
 
           {/*Carosello immagini */}
           <View style={styles.card}>
@@ -133,6 +250,10 @@ export default function EventDetailsScreen() {
             <Text style={styles.cardContent}>
               Questa descrizione è solo un esempio. Deve esssere inserita una descrizione nel database.
               Descrizione esempio, descrizione esempio, esempio, esempio. Esempio ewufwehbfeuhfbwejhbfhweefj
+              Questa descrizione è solo un esempio. Deve esssere inserita una descrizione nel database.
+              Descrizione esempio, descrizione esempio, esempio, esempio. Esempio ewufwehbfeuhfbwejhbfhweefj
+              Questa descrizione è solo un esempio. Deve esssere inserita una descrizione nel database.
+              Descrizione esempio, descrizione esempio, esempio, esempio. Esempio ewufwehbfeuhfbwejhbfhweefj
             </Text>
           </View>
         </ScrollView>
@@ -142,77 +263,3 @@ export default function EventDetailsScreen() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-
-  },
-  joinText: {
-    color: 'blue', // Puoi personalizzare il colore
-    fontWeight: 'bold', // Font-weight
-    fontSize: 16, // Font-size
-    marginRight: 10, // Spaziatura a destra
-  },
-  eventName: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  card: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
-    marginTop: 10,
-    marginBottom: 5,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  cardContent: {
-    fontSize: 15,
-    color: '#555',
-    lineHeight: 20,
-  },
-  infoRow: {
-    marginTop: 10,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  rowText: {
-    fontSize: 15,
-    marginLeft: 10,
-  },
-  imageCarousel: {
-    position: 'relative',
-    alignItems: 'center',
-    height: 250,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 8,
-  },
-  navButton: {
-    position: 'absolute',
-    top: '50%',
-
-    borderRadius: 20,
-    zIndex: 1,
-  },
-  navText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});

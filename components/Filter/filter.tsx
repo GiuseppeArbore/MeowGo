@@ -109,14 +109,14 @@ export function Filter() {
       borderBottomLeftRadius: 20,
       borderRightWidth: 0.5,
       borderTopWidth: 1,
-      borderColor: colors.buttonBackground,
+      borderColor: 'white',
     },
     applyButton: {
       backgroundColor: colors.buttonBackground,
       borderBottomRightRadius: 20,
       borderLeftWidth: 0.5,
       borderTopWidth: 1,
-      borderColor: colors.buttonBackground,
+      borderColor: 'white',
     },
     buttonText: {
       fontSize: 16,

@@ -84,7 +84,7 @@ export function EventList() {
                         <Text style={currentListStyles.eventDetails}>{formatDateTime(item.date)} |  {item.city} - {item.location} </Text>
                     </View>
                     {item.local_legend_here && ( // Mostra l'immagine solo se local_legend_here è true
-                        <Image source={require('@/assets/images/LL.png')} style={currentListStyles.eventImage} />
+                        <IconSymbol size={40} name = "checkmark.seal" color={'black'}></IconSymbol>
                     )}
                 </TouchableOpacity>
             );

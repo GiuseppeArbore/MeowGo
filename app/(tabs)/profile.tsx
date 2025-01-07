@@ -22,7 +22,7 @@ const ProfileScreen: React.FC = () => {
   const colors = {
     background: isDarkMode ? '#1C1C1C' : '#FFFFFF',
     text: isDarkMode ? '#FFFFFF' : '#000000',
-    inputBackground: isDarkMode ? '#2E2E2E' : '#F5F5F5',
+    cardBackground: isDarkMode ? '#2E2E2E' : '#ffffff',
     buttonBackground: isDarkMode ? '#2E2E2E' : '#E0E0E0',
     buttonText: isDarkMode ? '#FFFFFF' : '#000000',
   }
@@ -60,7 +60,7 @@ const ProfileScreen: React.FC = () => {
     cardFullWidth: {
       flex: 1,
       alignItems: 'center',
-      backgroundColor: colors.inputBackground,
+      backgroundColor: colors.cardBackground,
       padding: 16,
       marginBottom: 16,
       borderRadius: 8,
@@ -80,14 +80,14 @@ const ProfileScreen: React.FC = () => {
       flex: 1,
       justifyContent: 'space-between',
       alignItems: 'center',
-      backgroundColor: colors.inputBackground,
+      backgroundColor: colors.cardBackground,
       padding: 16,
       borderRadius: 8,
       elevation: 3,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
-      shadowRadius: 4,
+      shadowRadius:5,
     },
     title: {
       fontSize: 18,
