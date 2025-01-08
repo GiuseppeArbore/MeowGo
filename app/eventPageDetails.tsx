@@ -1,5 +1,5 @@
 import { Link, Stack } from 'expo-router';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, useColorScheme } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, useColorScheme, Alert } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import React, { useState } from 'react';
@@ -55,14 +55,13 @@ export default function EventDetailsScreen() {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      padding: 10,
+      padding: 16,
     },
     headerRight: {
       flexDirection: 'row',
       alignItems: 'center',
     },
     joinText: {
-      color: '#007AFF',
       fontSize: 18,
     },
     eventName: {
@@ -74,7 +73,8 @@ export default function EventDetailsScreen() {
       flex: 1,
       backgroundColor: colors.cardBackground,
       borderRadius: 8,
-      marginTop: 10,
+      marginTop: 8,
+      marginBottom: 8,
       shadowColor: '#000',
       shadowOpacity: 0.1,
       shadowRadius: 5,
@@ -130,7 +130,7 @@ export default function EventDetailsScreen() {
       justifyContent: 'space-between',
     },
     columnContainer: {
-      flex: 2,
+      flex: 1.5,
       flexDirection: 'column',
       justifyContent: 'space-between',
     },
@@ -139,6 +139,42 @@ export default function EventDetailsScreen() {
       height: 65,
     },
   });
+
+  const handleJoinLeaveEvent = () => {
+    if (myEvents.includes(eventId)) {
+      // Alert per confermare l'abbandono dell'evento
+      Alert.alert(
+        'Event Status',
+        'Are you sure you want to leave the event?',
+        [
+          { text: 'Cancel'},
+          {
+            text: 'Yes',
+            onPress: () => {
+              console.log('Event abandoned');
+              // Aggiorna stato in db
+            },
+          },
+        ]
+      );
+    } else {
+      // Alert per confermare l'adesione all'evento
+      Alert.alert(
+        'Event Status',
+        'Are you sure you want to join the event?',
+        [
+          { text: 'Cancel' },
+          {
+            text: 'Yes',
+            onPress: () => {
+              console.log('Event joined');
+              // Aggiorna stato in db
+            },
+          },
+        ]
+      );
+    }
+  };
 
   return (
     <>
@@ -157,35 +193,8 @@ export default function EventDetailsScreen() {
       ) : (
         <ScrollView style={styles.container}>
           <View style={styles.rowContainer}>
-            <View style={styles.columnContainer}>
-              {/* Status Card */}
-              <View style={[styles.card, { padding: 15, marginRight: 5 }]}>
-
-                <View style={{ alignItems: 'center' }}>
-                  <IconSymbol name={myEvents.includes(eventId) ? 'person.badge.minus' : 'person.badge.plus'}
-                    size={65}
-                    color={'#007AFF'}
-                  />
-                  <Text style={styles.joinText}>
-                    {myEvents.includes(eventId) ? 'Leave' : 'Join'}
-                  </Text>
-                </View>
-              </View>
-
-              {/* Taralli Card */}
-              <View style={[styles.card, { padding: 15, marginRight: 5}]}>
-                <View style={{ alignItems: 'center' }}>
-                  <Image
-                    source={require('@/assets/images/tarallo.png')}
-                    style={[styles.taralloIcon, { tintColor: colors.text }]}
-                  />
-                  <Text style={{fontSize: 15, color: colors.text}}> 10 Taralli</Text>
-                </View>
-              </View>
-            </View>
-
             {/*Info sull'evento */}
-            <View style={[styles.card, { padding: 15, flex: 3, marginLeft: 5,}]}>
+            <View style={[styles.card, { padding: 15, flex: 3, marginRight: 8 }]}>
               <Text style={styles.cardTitle}>Info</Text>
               <View style={styles.infoRow}>
                 {event.local_legend_here && (
@@ -218,13 +227,40 @@ export default function EventDetailsScreen() {
                 </View>
               </View>
             </View>
+            <View style={styles.columnContainer}>
+
+              {/* Status Card */}
+              <TouchableOpacity onPress={handleJoinLeaveEvent}>
+                <View style={[styles.card, { padding: 15, marginLeft: 8 }]}>
+                  <View style={{ alignItems: 'center' }}>
+                    <IconSymbol name={myEvents.includes(eventId) ? 'person.badge.minus' : 'person.badge.plus'}
+                      size={65}
+                      color={myEvents.includes(eventId) ? 'red' : 'green'}
+                    />
+                    <Text style={{ fontSize: 15, color: myEvents.includes(eventId) ? 'red' : 'green' }}>
+                      {myEvents.includes(eventId) ? 'Leave' : 'Join'}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+
+              {/* Taralli Card */}
+              <View style={[styles.card, { padding: 15, marginLeft: 8 }]}>
+                <View style={{ alignItems: 'center' }}>
+                  <Image
+                    source={require('@/assets/images/tarallo.png')}
+                    style={[styles.taralloIcon, { tintColor: colors.text }]}
+                  />
+                  <Text style={{ fontSize: 15, color: colors.text }}> 10 Taralli</Text>
+                </View>
+              </View>
+            </View>
 
           </View>
 
 
           {/*Carosello immagini */}
           <View style={styles.card}>
-
             <View style={styles.imageCarousel}>
               <Image source={images[currentImageIndex]} style={styles.image} />
               <TouchableOpacity

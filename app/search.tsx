@@ -93,7 +93,7 @@ export default function Filter() {
             borderWidth: 1,
             borderColor: colors.inputBackground,
             padding: 15,
-            marginBottom: 10,
+            marginBottom: 16,
             elevation: 3, // Ombra per Android
             shadowColor: '#000', // Ombra per iOS
             shadowOffset: { width: 0, height: 2 },
