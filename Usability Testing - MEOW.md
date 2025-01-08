@@ -6,62 +6,74 @@
 
 ### 
 
-### Roles
+### Roles - da capire
+
+##### Test 1
 
 - \<Name\> will be facilitator  
 - \<Other name\> and \<other name\> will be the observers  
-- …
+
+##### Test 2
+
+- \<Name\> will be facilitator  
+- \<Other name\> and \<other name\> will be the observers  
+
+##### Test 3
+
+- \<Name\> will be facilitator  
+- \<Other name\> and \<other name\> will be the observers  
+
+##### Test 4
+
+- \<Name\> will be facilitator  
+- \<Other name\> and \<other name\> will be the observers  
 
 ### Participants
 
-Target population: People who travel (Capire come restringere, forse).
+Target population: People who travel.
 
-Age: 19-35 yo           // questo era il nostro target generale, chiedere se mantenere questo o se per UT dobbiamo restringere
+Age: 19-35 yo 
 Expertise with other travel application: basic 
 Usage of mobile app: using a smartphone and its apps at least every day  
 Expertise with voyage: at least one time each year
-\[...\]
+
 
 ### Equipment
 
 Smartphone provided by the team  
 Camera
 Microphone  
-\[...\]
 
 ### Requirements
 
-A suitable “fake” account  
+A suitable “fake” account - yet logged with event joined  
 Internet available  
-Localization and notification enabled  
+Localization [and notification enabled]
 
-Dobbiamo dire qui se tipo vogliamo che l'account abbia già degli eventi joinati?
-Dobbiamo mettere qui se vogliamo che l'account sia joinato ad un evento in corso nel momento dell'usability testing?
-\[...\]
 
 ### Artifacts
 
 Printed list of tasks  
 Consent form  
-Pre-test questionnaire  
-SUS questionnaire  
+List pre-test questionsnnaire  
+SUS question
+
 Pens  
-\[...\]
 
-DEIDERE SE PERSONA GIA' LOGGATA
 
-### Tasks --- LAVORARE
+-- all'inizio l'utente deve essere già nell'evento "Karaoke e Beer" e in "Polito Party" di cui deve essere creatore
+- Polito PArty deve essere un evento in corso con almeno 2 persone joinate
+### Tasks - Realisitic - Actionable - Goal
 
-1. loggarsi
-3. Cercare l'evento "VALENTINO WALK"
-4. fnlnrg
-5. 
-2. Cercare dalla mappa l'evento "VALENTINO WALK" usando i filtri
-3. Cercare 
-3. Scoprire i dettagli dell'evento cercato e joinarsi
-4. vedere gli eventi a cui l'utente si é joinato 
-5. avviare un ice-breaker per un evento iniziato (evento fittizio che viene inserito ogni volta che si apre l'app, per simulare)
-6. 
+1. Vedere i dettagli dell'evento "VALENTINO WALK"
+2. Lascia l'evento appena visualizzato
+3. Unirsi ad un evento all'aperto(outdoor) dove è presente una persona del posto
+4. Controllare a che ora inizia l'evento vicino al Po'
+5. Lasciare l'evento "Karaoke e Beer"
+6. i
+7. Ottenere la certificazione come utente esperto di Torino 
+8. 
+9.  avviare un ice-breaker per l'evento "Polito Party" 
 
 | \# | Text of the task | Success criteria | Methodology |
 | :---- | :---- | :---- | :---- |
