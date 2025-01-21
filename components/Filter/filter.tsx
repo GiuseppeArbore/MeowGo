@@ -8,7 +8,7 @@ import { useAppContext } from '../../app/_layout';
 import React from 'react';
 
 export function Filter() {
-  const [isModalVisible, setModalVisible] = useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const { filters, setFilters } = useAppContext();
   const [filtersTemp, setFiltersTemp] = useState({ ...filters }); 
   const [showPickerLocation, setShowPickerLocation] = useState(false);
@@ -164,31 +164,29 @@ export function Filter() {
   };
 
   const handleCancel = () => {
-    setModalVisible(false);
+    setIsModalVisible(false);
   };
 
   const handleApply = () => {
     console.log('Filters applied');
     setFilters(filtersTemp);
-    setModalVisible(false);
+    setIsModalVisible(false);
   };
 
   return (
     <>
-    {!isModalVisible && 
-    <TouchableOpacity onPress={() => setModalVisible(true)}>
+    <TouchableOpacity onPress={() => setIsModalVisible(true)}>
       <IconSymbol
         size={28}
         name="line.3.horizontal.decrease"
         color={colorScheme === 'dark' ? '#FFF' : '#000'}
       />
     </TouchableOpacity>
-    }
     <Modal 
     visible={isModalVisible}
     transparent={true}
     animationType="fade"
-    onRequestClose={() => setModalVisible(false)}
+    onRequestClose={() => setIsModalVisible(false)}
     >
       <View style={styles.overlay}>
 

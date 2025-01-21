@@ -125,7 +125,6 @@ export default function RootLayout() {
               />
               <Stack.Screen name="eventPageDetails" initialParams={{ eventId: null }} />
               <Stack.Screen name="+not-found" />
-              <Stack.Screen name="search" options={{ presentation: 'transparentModal', headerShown: false }} />
             </Stack>
             <StatusBar style="auto" />
           </SQLiteProvider>
