@@ -157,7 +157,6 @@ const QuizSelectionScreen: React.FC = () => {
                 {currentQuestionIndex + 1}/{questions.length}
               </Text>
           </View>
-          <View style={styles.divider} />
           <ScrollView contentContainerStyle={styles.quizContainer}>
             <Text style={styles.question}>{currentQuestion.question}</Text>
             {currentQuestion.options.map((option) => (
