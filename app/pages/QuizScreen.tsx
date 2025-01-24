@@ -142,7 +142,22 @@ const QuizSelectionScreen: React.FC = () => {
         resizeMode="cover"
       >
         <View style={styles.overlay} />
+
         <View style={styles.card}>
+            <View style={styles.progressContainer}>
+              {/* Barra di progresso */}
+              <View
+                style={[
+                  styles.progressBar,
+                  { width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` },
+                ]}
+              />
+              {/* Testo al centro della barra */}
+              <Text style={styles.progressText}>
+                {currentQuestionIndex + 1}/{questions.length}
+              </Text>
+          </View>
+          <View style={styles.divider} />
           <ScrollView contentContainerStyle={styles.quizContainer}>
             <Text style={styles.question}>{currentQuestion.question}</Text>
             {currentQuestion.options.map((option) => (
@@ -150,7 +165,7 @@ const QuizSelectionScreen: React.FC = () => {
                 key={option}
                 style={[
                   styles.optionButton,
-                  selectedAnswer === option && { backgroundColor: '#c8c8c9' },
+                  selectedAnswer === option && { backgroundColor: '#a9a9aa' },
                 ]}
                 onPress={() => handleAnswerSelection(option)}
               >
@@ -161,7 +176,7 @@ const QuizSelectionScreen: React.FC = () => {
           <View style={styles.footer}>
             <TouchableOpacity style={styles.exitButton} onPress={handleBackOrExit}>
               <Text style={styles.exitButtonText}>
-              {currentQuestionIndex === 0 ? 'Exit' : 'Back'}
+                {currentQuestionIndex === 0 ? 'Exit' : 'Back'}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -181,25 +196,25 @@ const QuizSelectionScreen: React.FC = () => {
 
   return (
     <ImageBackground
-        source={require('@/assets/images/quizBackground.png')}
-        style={styles.background}
-        resizeMode="cover"
-      >
-        <View style={styles.overlay}/>
-    <View style={styles.card}>
-      <ScrollView contentContainerStyle={styles.quizContainer}>
-        <Text style={styles.question}>Choose a City</Text>
+      source={require('@/assets/images/quizBackground.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay} />
+      <View style={styles.card}>
+        <ScrollView contentContainerStyle={styles.quizContainer}>
+          <Text style={styles.question}>Choose a City</Text>
           {cities.map((city) => (
-            <TouchableOpacity 
-            key={city} 
-            style={[styles.optionButton]}
-            onPress={() => setSelectedCity(city)}
+            <TouchableOpacity
+              key={city}
+              style={[styles.optionButton]}
+              onPress={() => setSelectedCity(city)}
             >
               <Text style={styles.optionText}>{city}</Text>
             </TouchableOpacity>
           ))}
-      </ScrollView>
-    </View>
+        </ScrollView>
+      </View>
     </ImageBackground>
   );
 };
@@ -231,6 +246,28 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  progressContainer: {
+    width: '100%',
+    marginBottom: 30,
+    height: 22,
+    backgroundColor: '#c8c8c9',
+    borderRadius: 8,
+    overflow: 'hidden',
+    justifyContent: 'center',
+  },
+  progressBar: {
+    position: 'absolute', 
+    height: '100%',
+    backgroundColor: '#4CAF50',
+    borderRadius: 8,
+  },
+  progressText: {
+    textAlign: 'center',
+    fontSize: 15,
+    color: '#fff',
+    fontWeight: 'bold',
+    zIndex: 1, 
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -250,7 +287,9 @@ const styles = StyleSheet.create({
   },
   optionButton: {
     backgroundColor: '#e3e3e4',
+    borderColor: '#a9a9aa',
     padding: 12,
+    borderWidth: 0.2,
     borderRadius: 8,
     marginBottom: 12,
     alignItems: 'center',
@@ -262,7 +301,7 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 16,
+    marginTop: 30,
   },
   exitButton: {
     flex: 1,
