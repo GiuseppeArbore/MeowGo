@@ -30,7 +30,9 @@ const MAPPING = {
   'map': 'map',
   'figure.run' : 'directions-run',
   'sun.min' : 'sunny',
-  'house.lodge' : 'home'
+  'house.lodge' : 'home',
+  'person.badge.plus' : 'person-add',
+  'person.badge.minus' : 'persone-remove',
 
 } as unknown as Partial<
   Record<

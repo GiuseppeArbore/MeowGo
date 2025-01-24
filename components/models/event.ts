@@ -5,7 +5,6 @@ export class Event {
     longitude: number;
     date: Date;
     description: string;
-    hour: string;
     max_people: number;
     creator: string;    //username del creatore
     place: string;
@@ -14,20 +13,24 @@ export class Event {
     type: string;
     city: string;
 
-    constructor(name: string, location: string, latitude: number, longitude: number, date: Date, description: string, hour: string, max_people: number, creator: string, place: string, local_legend_here: boolean, secred_code: string, type: string, city: string) {
+    constructor(name: string, location: string, latitude: number, longitude: number, date: string, description: string, hour: string, max_people: number, creator: string, place: string, local_legend_here: string, secred_code: string, type: string, city: string) {
         this.name = name;
         this.location = location;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.date = date;
         this.description = description;
-        this.hour = hour;
         this.max_people = max_people;
         this.creator = creator;
         this.place = place;
-        this.local_legend_here = local_legend_here;
+        this.local_legend_here = local_legend_here === 'true';
         this.secret_code = secred_code;
         this.type = type;
         this.city = city;
+
+        const eventDate = new Date(date);
+        const [h, m] = hour.split(':');
+        eventDate.setHours(parseInt(h, 10), parseInt(m, 10), 0, 0);
+        this.date = eventDate;
     }
+    
 }

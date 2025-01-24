@@ -6,14 +6,14 @@ import { Link, useNavigation } from 'expo-router';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Login_form } from '@/components/Login_form';
-import { Filter } from '@/components/Filter/filter';
 import { DATABASE_NAME } from '../../utils/database';
 import { Event } from '../../components/models/event';
 import { useAppContext } from '../_layout'; // Percorso al file RootLayout
 import EventDetailsPopup from '@/components/EventDetailsPopup';
 import { EventList } from '@/components/EventList';
-import { FilterChips } from '@/components/FilterChips';
-import { SearchBar } from '@/components/SearchBar';
+import { FilterChips } from '@/components/Filter/FilterChips';
+import { SearchBar } from '@/components/SearchBar/SearchBar';
+import { Filter } from '@/components/Filter/Filter';
 
 
 

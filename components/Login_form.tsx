@@ -22,7 +22,7 @@ export function Login_form() {
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
     const { db } = useAppContext();
-    const { user, setUser } = useAppContext();
+    const { user, setUser, setMyEvents} = useAppContext();
     
     
 
@@ -119,6 +119,9 @@ export function Login_form() {
             if (result.length > 0) {
                 const userResult = result[0] as { username: string, password: string, name: string, surname: string, birthdate: string, taralli: number };
                 const ll_for = local_legend_for.map((ll: any) => ll.city); 
+                const eventsJoined = (await db.getAllAsync('SELECT event FROM users_events WHERE user = ?', [username])).map((ev: any) => ev.event);
+                setMyEvents(eventsJoined);
+                console.log('Joined events of '+ username + ": " + eventsJoined);
                 setUser(new User(userResult.username, userResult.password, userResult.name, userResult.surname, new Date(userResult.birthdate), ll_for, userResult.taralli));
                 setModalVisible(false);
             } else {

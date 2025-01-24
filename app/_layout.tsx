@@ -53,6 +53,7 @@ export const AppContext = createContext<{
   allEvents: Event[];
   allUsers: User[];
   myEvents: String[];
+  setMyEvents: (events: String[]) => void;
   user: User | null; // null se non loggato  
   setUser: (users: User) => void;
   db: SQLite.SQLiteDatabase;
@@ -114,7 +115,7 @@ export default function RootLayout() {
   }
 
   return (
-    <AppContext.Provider value={{allEvents, allUsers, myEvents, user, setUser, db: db!, filters, setFilters, searchFilters, setSearchFilters}}>
+    <AppContext.Provider value={{allEvents, allUsers, myEvents, setMyEvents, user, setUser, db: db!, filters, setFilters, searchFilters, setSearchFilters}}>
 
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Suspense fallback={<View style={StyleSheet.absoluteFill}><Text>Loading...</Text></View>}>
@@ -122,10 +123,8 @@ export default function RootLayout() {
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} initialParams={{ allEvents, allUsers, myEvents }}
               />
-
+              <Stack.Screen name="eventPageDetails" initialParams={{ eventId: null }} />
               <Stack.Screen name="+not-found" />
-              <Stack.Screen name="filter" options={{ presentation: 'transparentModal', headerShown: false }} />
-              <Stack.Screen name="search" options={{ presentation: 'transparentModal', headerShown: false }} />
             </Stack>
             <StatusBar style="auto" />
           </SQLiteProvider>

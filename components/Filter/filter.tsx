@@ -8,7 +8,7 @@ import { useAppContext } from '../../app/_layout';
 import React from 'react';
 
 export function Filter() {
-  const [isModalVisible, setModalVisible] = useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const { filters, setFilters } = useAppContext();
   const [filtersTemp, setFiltersTemp] = useState({ ...filters }); 
   const [showPickerLocation, setShowPickerLocation] = useState(false);
@@ -55,7 +55,7 @@ export function Filter() {
       borderWidth: 1,
       borderColor: colors.inputBackground,
       padding: 15,
-      marginBottom: 10,
+      marginBottom: 16,
       elevation: 3, // Ombra per Android
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
@@ -109,14 +109,14 @@ export function Filter() {
       borderBottomLeftRadius: 20,
       borderRightWidth: 0.5,
       borderTopWidth: 1,
-      borderColor: colors.buttonBackground,
+      borderColor: 'white',
     },
     applyButton: {
       backgroundColor: colors.buttonBackground,
       borderBottomRightRadius: 20,
       borderLeftWidth: 0.5,
       borderTopWidth: 1,
-      borderColor: colors.buttonBackground,
+      borderColor: 'white',
     },
     buttonText: {
       fontSize: 16,
@@ -164,31 +164,29 @@ export function Filter() {
   };
 
   const handleCancel = () => {
-    setModalVisible(false);
+    setIsModalVisible(false);
   };
 
   const handleApply = () => {
     console.log('Filters applied');
     setFilters(filtersTemp);
-    setModalVisible(false);
+    setIsModalVisible(false);
   };
 
   return (
     <>
-    {!isModalVisible && 
-    <TouchableOpacity onPress={() => setModalVisible(true)}>
+    <TouchableOpacity onPress={() => setIsModalVisible(true)}>
       <IconSymbol
         size={28}
         name="line.3.horizontal.decrease"
         color={colorScheme === 'dark' ? '#FFF' : '#000'}
       />
     </TouchableOpacity>
-    }
     <Modal 
     visible={isModalVisible}
     transparent={true}
     animationType="fade"
-    onRequestClose={() => setModalVisible(false)}
+    onRequestClose={() => setIsModalVisible(false)}
     >
       <View style={styles.overlay}>
 
