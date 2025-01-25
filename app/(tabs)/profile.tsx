@@ -9,8 +9,8 @@ const ProfileScreen: React.FC = () => {
   const { user, allEvents } = useAppContext();
 
   const userImages: { [key: string]: any } = {
-    Peppe: require('@/assets/images/Peppe.jpg'),
-    Pio: require('@/assets/images/Pio.jpg'),
+    Peppe: require('@/assets/images/users/Peppe.jpg'),
+    Pio: require('@/assets/images/users/Pio.jpg'),
   };
 
   const router = useRouter();
