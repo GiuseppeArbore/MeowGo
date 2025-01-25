@@ -13,7 +13,28 @@ const MAPPING = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
-} as Partial<
+  'list.number': 'format-list-numbered',
+  'person.crop.circle' : 'account-circle',
+  'line.3.horizontal.decrease' : 'filter-list',
+  'magnifyingglass' : 'search',
+  'calendar' : 'calendar-month',
+  'clock' : 'access-time',
+  'location': 'location-on',
+  'xmark' : 'close',
+  'checklist.checked' : 'checklist',
+  'plus.circle' : 'add-circle-outline',
+  'globe.europe.africa' : 'language',
+  'star': 'star-border',
+  'location.fill': 'location-on',
+  'person.2': 'people-outline',
+  'map': 'map',
+  'figure.run' : 'directions-run',
+  'sun.min' : 'sunny',
+  'house.lodge' : 'home',
+  'person.badge.plus' : 'person-add',
+  'person.badge.minus' : 'persone-remove',
+
+} as unknown as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
     React.ComponentProps<typeof MaterialIcons>['name']
