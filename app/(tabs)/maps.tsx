@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, useColorScheme, ScrollView } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Linking } from 'react-native';
-import { Link, useNavigation } from 'expo-router';
+import { Link, router, useNavigation } from 'expo-router';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Login_form } from '@/components/Login_form';
@@ -144,7 +144,7 @@ const TabThreeScreen: React.FC = () => {
                     visible={isPopupVisible}
                     onClose={handleClosePopup}
                     onDetails={() => {
-                        // Puoi gestire la navigazione ai dettagli qui
+                        router.push(`/eventPageDetails?eventId=${selectedEvent.name}`);
                         console.log('Navigate to details for', selectedEvent);
                         setIsPopupVisible(false);
                     }}
