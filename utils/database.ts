@@ -69,6 +69,8 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
         DROP TABLE IF EXISTS "users_events";
         DROP TABLE IF EXISTS "icebreakers";
         DROP TABLE IF EXISTS "todos";
+        DROP TABLE IF EXISTS "heads_up";
+        DROP TABLE IF EXISTS "truth_or_dare";
         CREATE TABLE "users" (
           "username"	TEXT NOT NULL,
           "password"	TEXT NOT NULL,
@@ -115,6 +117,15 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
           "rules" TEXT NOT NULL,
           PRIMARY KEY("name")
         );
+        CREATE TABLE "heads_up" (
+          "word" TEXT NOT NULL,
+          PRIMARY KEY("word")
+        );
+        CREATE TABLE "truth_or_dare" (
+          "question" TEXT NOT NULL,
+          PRIMARY KEY("question")
+        );
+
       `);
   
       await db.runAsync(`INSERT INTO "users" ("username","password","name","surname","birthdate","taralli")
@@ -149,9 +160,42 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
               ('Heads up!','Heads Up is a fun and fast-paced party game where players take turns guessing words or phrases displayed on a card or device held on their forehead. 
         Other players give clues by acting, describing, or making sounds to help them guess before the timer runs out. ','Regole2'),
               ('Never have I ever','Two Truths and a Lie is a classic icebreaker game where players share three statements about themselves: two truths and one lie.','Regole3'),
-              ('Truth or dare','Never Have I Ever is a popular party game where players take turns sharing things they have never done.r','Regole4');
+              ('Truth or dare','Never Have I Ever is a popular party game where players take turns sharing things they have never done.','Regole4');
       `);
-      
+
+      await db.runAsync(`INSERT INTO "heads_up" ("word")
+        VALUES ('Cinema'),
+              ('Pizza'),
+              ('Football'),
+              ('Basketball'),
+              ('Ball'),
+              ('Dog'),
+              ('Cat'),
+              ('Fish'),
+              ('Car'),
+              ('House'),
+              ('Computer'),
+              ('Phone'),
+              ('Table'),
+              ('Chair'),
+              ('Book');
+      `);
+
+      await db.runAsync(`INSERT INTO "truth_or_dare" ("question")
+        VALUES ('Have you ever cheated on a test?'),
+              ('Have you ever lied to your parents?'),
+              ('Have you ever stolen something?'),
+              ('Have you ever been in a physical fight?'),
+              ('Have you ever been in a car accident?'),
+              ('Have you ever been arrested?'),
+              ('Have you ever cheated on a partner?'),
+              ('Have you ever been in love?'),
+              ('Have you ever been in a long-distance relationship?'),
+              ('Have you ever been in a relationship with someone much older or younger than you?'),
+              ('Have you ever been in a relationship with someone you met online?'),
+              ('Have you ever been in a relationship with someone you met at work?'),
+              ('Have you ever played a prank on someone?');
+      `);     
   
       await loadDatabase();
   
