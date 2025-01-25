@@ -6,7 +6,8 @@ import {
     TextInput,
     Text,
     TouchableOpacity,
-    useColorScheme
+    useColorScheme,
+    Button
 } from 'react-native';
 
 
@@ -23,6 +24,7 @@ export function Login_form() {
     const isDarkMode = colorScheme === 'dark';
     const { db } = useAppContext();
     const { user, setUser, setMyEvents} = useAppContext();
+    const usersName = ["Peppe", "Pio", "Caca", "Fra"];
     
     
 
@@ -98,7 +100,7 @@ export function Login_form() {
         },
     });
     
-    const handleLogin = async () => {
+    const handleLoginVero = async () => {
         try {
             if (!db) {
                 throw new Error('Database not found');
@@ -134,6 +136,71 @@ export function Login_form() {
         }
     };
 
+    const handleLogin = async () => {
+        try {
+            if (!db) {
+                throw new Error('Database not found');
+            } else {
+                console.log('Database opened at:', db.databasePath);
+            }
+    
+            const result = await db.getAllAsync('SELECT * FROM users WHERE username = ?', [username]);
+            console.log('Login Query result:', result);
+            const local_legend_for = await db.getAllAsync('SELECT city FROM users_ll_for WHERE username = ?', [username]);
+            console.log('Local legend for:', local_legend_for);
+
+            if (result.length > 0) {
+                const userResult = result[0] as { username: string, password: string, name: string, surname: string, birthdate: string, taralli: number };
+                const ll_for = local_legend_for.map((ll: any) => ll.city); 
+                const eventsJoined = (await db.getAllAsync('SELECT event FROM users_events WHERE user = ?', [username])).map((ev: any) => ev.event);
+                setMyEvents(eventsJoined);
+                console.log('Joined events of '+ username + ": " + eventsJoined);
+                setUser(new User(userResult.username, userResult.password, userResult.name, userResult.surname, new Date(userResult.birthdate), ll_for, userResult.taralli));
+                setModalVisible(false);
+            } else {
+                setErrorMessage('Username non trovato');
+            }
+
+        } catch (error) {  
+            console.error('Error:', error);
+            setErrorMessage('Errore durante il login');
+        }
+    };
+
+    /*login senza password*/
+    return (
+        <Modal
+            visible={isModalVisible}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setModalVisible(false)}
+        >
+            <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                    <Text style={styles.title}>Who are you?</Text>
+                    {usersName.map((name) => (
+                        <TouchableOpacity 
+                            key={name} 
+                            style={[
+                                styles.button, 
+                                username !== name && {borderColor: 'gray', borderWidth: 2, backgroundColor: 'white'},
+                                username === name && { borderColor: 'blue', borderWidth: 4, backgroundColor: 'lightblue' }
+                            ]} 
+                            onPress={() => setUsername(name)}
+                        >
+                            <Text style={styles.buttonText}>{name}</Text>
+                        </TouchableOpacity>
+                    ))}
+                    <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                        <Text style={styles.buttonText}>Select</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Modal>
+    );
+
+
+    /*login con password
     return (
         <Modal
             visible={isModalVisible}
@@ -167,5 +234,5 @@ export function Login_form() {
             </View>
         </Modal>
     );
-
+    */
 }

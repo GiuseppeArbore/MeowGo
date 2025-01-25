@@ -131,7 +131,8 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
       await db.runAsync(`INSERT INTO "users" ("username","password","name","surname","birthdate","taralli")
         VALUES ('Peppe','password','Giuseppe','Arbore','2001-10-11',10),
                 ('Caca','password','Claudia','Maggiulli','2002-03-26',0),
-                ('Pio','password','Michelepio','Mucci','1999-12-26',3);
+                ('Pio','password','Michelepio','Mucci','1999-12-26',3),
+                ('Fra', 'password', 'Francesca', 'Porcelli', '2001-02-07', 5);
       `);
       await db.runAsync(`INSERT INTO "events" ("name","location","latitude","longitude","date","hour","max_people","creator","place","local_legend_here","secret_code","type","city","ended") 
         VALUES ('Boat trip','Murazzi','45.05985','7.692342','2025-03-02','16:00',10,'Peppe','Outside','true',13,'Adventure','Turin','2025-03-02T20:00Z'),
