@@ -6,15 +6,14 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import QuizScreen from '../pages/QuizScreen'; // Nota il percorso assoluto per `QuizScreen`
-import { Stack } from 'expo-router';
+
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
     <Tabs
-      initialRouteName="maps"
+      initialRouteName="index"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
@@ -29,14 +28,14 @@ export default function TabLayout() {
         }),
       }}>
       <Tabs.Screen
-        name="maps"
+        name="index"
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="index"
+        name="joined"
         options={{
           title: 'Joined',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="list.number" color={color} />,

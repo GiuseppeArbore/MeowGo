@@ -5,44 +5,46 @@ import { Filters, useAppContext } from '@/app/_layout';
 
 // Default filters
 const defaultFilters: Filters = {
-  localLegend: false,
-  eventType: null,
-  maxPeople: 1,
-  location: null,
-}; 
+    localLegend: false,
+    eventType: null,
+    maxPeople: 99,
+    location: null,
+};
 
 
 export function FilterChips() {
     const { filters, setFilters } = useAppContext();
     const colorScheme = useColorScheme();
-      const isDarkMode = colorScheme === 'dark';
+    const isDarkMode = colorScheme === 'dark';
 
     const filterTextMap: Record<string, string> = {
         localLegend: filters.localLegend ? 'Local Legend' : '',
-        maxPeople: filters.maxPeople > 1 ? `< ${filters.maxPeople} people` : '',
+        maxPeople: filters.maxPeople < 99 ? `< ${filters.maxPeople} people` : '',
         eventType: filters.eventType || '',
         location: filters.location ? `${filters.location}` : '',
     };
 
     // Handler to reset filter to default
     const handleRemoveFilter = (filterKey: keyof Filters) => {
-        console.log("rimozione- filtro: "+ filterKey);
-        setFilters((prevFilters) => ({
-            ...prevFilters,
+        console.log("rimozione- filtro: " + filterKey);
+        const updatedFilters = {
+            ...filters,
             [filterKey]: defaultFilters[filterKey],
-        }));
+        };
+        setFilters(updatedFilters);
     };
 
     const styles = StyleSheet.create({
         filterBar: {
             position: 'absolute',
             top: 10,
-            left: 0,
+            left: 6,
             right: 0,
             flexDirection: 'row',
             paddingHorizontal: 10,
             paddingVertical: 5,
             zIndex: 10,
+            marginBottom: 10
         },
         filterChipContainer: {
             flexDirection: 'row',

@@ -125,7 +125,7 @@ const EventDetailsPopup: React.FC<EventDetailsPopupProps> = ({
                             )}
                             <View style={styles.row}>
                                 <IconSymbol name="clock" size={20} color={colors.text} />
-                                <Text style={styles.rowText}>{formatDateTime(event.date)}</Text>
+                                <Text style={styles.rowText}>{formatDateTime(new Date(event.date))}</Text>
                             </View>
                             <View style={styles.row}>
                                 <IconSymbol name="location" size={20} color={colors.text} />

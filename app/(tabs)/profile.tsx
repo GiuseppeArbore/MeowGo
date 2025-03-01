@@ -1,22 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, Button, Image, useColorScheme, SafeAreaView } from 'react-native';
 import { useAppContext } from '../_layout';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useRouter } from 'expo-router';
+import { Login_form } from '@/components/Login_form';
+import ModalCitySelector from '@/components/LLCityPopup';
 
 
 const ProfileScreen: React.FC = () => {
   const { user, allEvents } = useAppContext();
 
   const userImages: { [key: string]: any } = {
-    Peppe: require('@/assets/images/Peppe.jpg'),
-    Pio: require('@/assets/images/Pio.jpg'),
+    Peppe: require('@/assets/images/users/Peppe.jpg'),
+    Pio: require('@/assets/images/users/Pio.jpg'),
+    Fra: require('@/assets/images/users/fra.jpeg'),
+    Caca: require('@/assets/images/users/cla.jpg'),
   };
 
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const nEventsCreated = allEvents.filter((ev) => ev.creator === user?.username).length;
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isCityModalVisible, setIsCityModalVisible] = useState(false);
 
 
   const colors = {
@@ -26,6 +32,11 @@ const ProfileScreen: React.FC = () => {
     buttonBackground: isDarkMode ? '#2E2E2E' : '#E0E0E0',
     buttonText: isDarkMode ? '#FFFFFF' : '#000000',
   }
+
+  const handleCitySelect = (city: string) => {
+    setIsCityModalVisible(false);  // Chiudiamo il modale della città quando la città è selezionata
+    router.push(`../pages/quiz/${city}`);
+  };
 
   const styles = StyleSheet.create({
     safeArea: {
@@ -39,8 +50,13 @@ const ProfileScreen: React.FC = () => {
     },
     userContainer: {
       flexDirection: 'row',
+      justifyContent: 'space-between',
       alignItems: 'center',
       marginBottom: 20,
+    },
+    userInfo: {
+      flexDirection: 'row',
+      alignItems: 'center',
     },
     userAvatar: {
       width: 50,
@@ -87,7 +103,7 @@ const ProfileScreen: React.FC = () => {
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
-      shadowRadius:5,
+      shadowRadius: 5,
     },
     title: {
       fontSize: 18,
@@ -110,27 +126,41 @@ const ProfileScreen: React.FC = () => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         {/* Nome dell'utente in alto */}
+        <Login_form isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible}/>
         <View style={styles.userContainer}>
-          <Image
-            source={user?.username ? userImages[user.username] || require('@/assets/images/null.jpg') : require('@/assets/images/null.jpg')}
-            style={styles.userAvatar}
-          />
-          <Text style={styles.userName}>{user?.name + " " + user?.surname}</Text>
+          <View style={styles.userInfo}>
+            <Image
+              source={user?.username ? userImages[user.username] || require('@/assets/images/null.jpg') : require('@/assets/images/null.jpg')}
+              style={styles.userAvatar}
+            />
+            <Text style={styles.userName}>{user?.name + " " + user?.surname}</Text>
+          </View>
+          <Button title="Logout" onPress={()=>setIsModalVisible(true)}/>
         </View>
 
         {/* Card per le città */}
         <View style={[styles.cardFullWidth, { justifyContent: 'space-between' }]}>
           <Text style={styles.title}>Your local legend cities </Text>
           <IconSymbol size={65} name="globe.europe.africa" color={colors.text} />
-          {user?.local_legend_for.length > 0 ?
+          {user ? (user.local_legend_for.length > 0 ?
             <Text style={styles.infoText}>{user.local_legend_for.join(', ')}</Text>
+            : <Text style={styles.infoItalicText}>You're not a Local Legend yet</Text>)
             : <Text style={styles.infoItalicText}>You're not a Local Legend yet</Text>
           }
           <Button
             title="Add city"
-            onPress={() => router.push('../pages/QuizScreen')}
+            //onPress={() => router.push('../pages/QuizScreen')}
+            onPress={() => setIsCityModalVisible(true)}
           />
         </View>
+
+        {/* ModalCitySelector */}
+        <ModalCitySelector
+          isVisible={isCityModalVisible}
+          onSelectCity={handleCitySelect}
+          onClose={() => setIsCityModalVisible(false)}
+          llCities={ user ? user.local_legend_for : [] }
+        />
 
         {/* Card per punti guadagnati e eventi partecipati (affiancati) */}
         <View style={styles.cardTwoColumns}>
@@ -151,14 +181,17 @@ const ProfileScreen: React.FC = () => {
           <Text style={styles.title}>Taralli</Text>
           <Image
             source={require('@/assets/images/tarallo.png')}
-            style={[styles.taralloIcon,{ tintColor: colors.text }]}
-            />
+            style={[styles.taralloIcon, { tintColor: colors.text }]}
+          />
           <Text style={styles.infoText}>{user?.taralli} taralli</Text>
           <Text style={styles.infoItalicText}>
             At every event you attend, you get a tarallo.
-            The more taralli you have, the more friends you'll have!
+            The more taralli you have, the more discounts you'll have in future! [Coming soon]
           </Text>
-
+          <Button
+            title="View Discounts"
+            onPress={() => router.push('../discounts')}
+          />
         </View>
       </View>
     </SafeAreaView>

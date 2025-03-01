@@ -1,141 +1,232 @@
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, useColorScheme, Image } from 'react-native';
-import { useAppContext } from '../_layout'; // Percorso al file RootLayout
-import { Event } from '@/components/models/event';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import MapViewCluster from 'react-native-map-clustering';
+import { useAppContext } from '../_layout';
+import { Event } from '../../components/models/event';
+import { useColorScheme } from 'react-native';
+import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import EventDetailsPopup from '@/components/EventDetailsPopup';
+import { EventList } from '@/components/EventList';
+import { FilterChips } from '@/components/Filter/FilterChips';
+import { SearchBar } from '@/components/SearchBar/SearchBar';
+import { Filter } from '@/components/Filter/Filter';
+import { Faq } from '@/components/FaqPopup';
 import { router } from 'expo-router';
-import { formatDateTime } from '@/hooks/dateFormat';
 
-export default function HomeScreen() {
-    const { allEvents, myEvents } = useAppContext(); // Ottieni la lista di eventi dal context
-    const colorScheme = useColorScheme(); // Rileva se è light o dark mode
-    const styles = colorScheme === 'dark' ? darkStyles : lightStyles; // Cambia gli stili dinamicamente
+const TabThreeScreen: React.FC = () => {
+  const { allEvents, myEvents } = useAppContext();
+  const [selectedView, setSelectedView] = useState(1);
+  const { filters, searchFilters } = useAppContext();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [showedEvents, setShowedEvents] = useState<Event[]>([]);
+  const [inMapRegion, setInMapRegion] = useState({
+    latitude: 45.066685,
+    longitude: 7.6738884,
+    latitudeDelta: 0.05,
+    longitudeDelta: 0.05,
+  });
 
-    //Filtra gli eventi per visualizzare solo quelli in myEvents
-    const filteredEvents = allEvents.filter((event: Event) =>
-        myEvents.includes(event.name) // Confronta con il nome dell'evento
-    );
+  const [mapRegion, setMapRegion] = useState({
+    latitude: 45.066685,
+    longitude: 7.6738884,
+    latitudeDelta: 0.05,
+    longitudeDelta: 0.05,
+  });
+  const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0); // Stato per forzare il re-render della mappa
 
-    console.log('[HomeScreen] Eventi disponibili:', allEvents);
+  useEffect(() => {
+    const newRegion = getInitLocation(searchFilters.city);
+    setMapRegion({
+      latitude: newRegion.latitude,
+      longitude: newRegion.longitude,
+      latitudeDelta: 0.05,
+      longitudeDelta: 0.05,
+    });
+    setInMapRegion({
+      latitude: newRegion.latitude,
+      longitude: newRegion.longitude,
+      latitudeDelta: 0.05,
+      longitudeDelta: 0.05,
+    });
+    console.log('New region:', newRegion);
+  }, [searchFilters.city]);
 
-    // Funzione per renderizzare ogni evento nella FlatList
-    const renderEvent = ({ item }: { item: Event }) => {
-        console.log(`[RenderEvent] Rendering evento: ${item.name}`);
-        return (
-            <TouchableOpacity
-                style={styles.eventCard}
-                onPress={() => router.push(`/eventPageDetails?eventId=${item.name}`)}
-            >
-                <View>
-                    <Text style={styles.eventName}>{item.name.toUpperCase()}</Text>
-                    <Text style={styles.eventDetails}>{formatDateTime(item.date)}</Text>
-                </View>
-                {item.local_legend_here && ( // Mostra l'immagine solo se local_legend_here è true
-                    <Image source={require('@/assets/images/LL.png')} style={styles.eventImage} />
-                )}
-            </TouchableOpacity>
-        );
-    };
+  const getInitLocation = (city: string) => {
+    switch (city) {
+      case "Turin":
+        return { latitude: 45.066685, longitude: 7.6738884 };
+      case "Bari":
+        return { latitude: 41.117143, longitude: 16.87187 };
+      default:
+        return { latitude: 45.0, longitude: 7.6 };
+    }
+  };
 
-    return (
-        <View style={styles.container}>
-            <FlatList
-                data={filteredEvents}
-                renderItem={renderEvent}
-                keyExtractor={(item, index) => index.toString()} // Usa un indice come chiave
-                contentContainerStyle={styles.listContent}
-                ListEmptyComponent={<Text style={styles.emptyText}>Nessun evento disponibile</Text>} // Caso lista vuota
-            />
+  const handleRegionChange = (region: any) => {
+    setMapRegion(region);
+  };
+
+  useEffect(() => {
+    const showed = allEvents.filter(event => {
+      return (
+        event.city == searchFilters.city &&
+        (searchFilters.date || new Date(event.date) > new Date(searchFilters.date as string)) &&
+        (!filters.localLegend || event.local_legend_here) &&
+        (filters.maxPeople == 1 || event.max_people <= filters.maxPeople) &&
+        (!filters.eventType || event.type === filters.eventType) &&
+        (!filters.location || event.place.toLowerCase() === filters.location.toLowerCase()) &&
+        !myEvents.includes(event.name) 
+      );
+    });
+    setShowedEvents(showed);
+    setLoading(false);
+  }, [filters, searchFilters, allEvents, mapRegion]);
+
+  useEffect(() => {
+      // Forza un refresh della mappa quando si passa alla vista "Map"
+      setRefreshKey(prevKey => prevKey + 1);    
+  }, [selectedView, searchFilters.city]);
+
+
+  const handleMarkerPress = (event: Event) => {
+    setSelectedEvent(event);
+    setIsPopupVisible(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupVisible(false);
+    setSelectedEvent(null);
+  };
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    segmentedControlContainer: {
+      marginHorizontal: 10,
+      paddingHorizontal: 10,
+    },
+    filterSearchContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 60,
+      marginBottom: 8,
+      marginRight: 10,
+      paddingVertical: 5,
+      paddingHorizontal: 10,
+    },
+    mapContainer: {
+      flex: 1,
+      marginTop: 10,
+    },
+    map: {
+      flex: 1,
+    },
+    filterButton: {
+      width: 40,
+      height: 40,
+      backgroundColor: isDarkMode ? '#333' : '#e3e3e4',
+      borderRadius: 20,
+      marginLeft: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.filterSearchContainer}>
+        {/* Faq */}
+        <TouchableOpacity style={styles.filterButton}>
+          <Faq />
+        </TouchableOpacity>
+
+        {/* Barra finta cliccabile */}
+        <SearchBar setShowedEvents={setShowedEvents} filters={filters} />
+        <TouchableOpacity style={styles.filterButton}>
+          <Filter setShowedEvents={setShowedEvents} searchFilters={searchFilters} />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.segmentedControlContainer}>
+        <SegmentedControl
+          values={['List', 'Map']}
+          selectedIndex={selectedView}
+          onChange={event => {
+            setSelectedView(event.nativeEvent.selectedSegmentIndex);
+          }}
+        />
+      </View>
+
+      {selectedView === 0 ? (
+        <View style={styles.mapContainer}>
+          <EventList />
         </View>
-    );
-}
+      ) : (
+        <View style={styles.mapContainer}>
+          {/* Barra filtri scrollabile */}
+          <FilterChips />
+          {loading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={isDarkMode ? '#fff' : '#000'} />
+            </View>
+          ) : (
+            <MapViewCluster
+              key={`${refreshKey}`} // Usa la chiave per forzare il re-render
+              style={styles.map}
+              region={inMapRegion}
+              onRegionChangeComplete={handleRegionChange}
+            >
+              {showedEvents.length > 0 ? showedEvents.map((event, index) => {
+                const latitude = parseFloat(event.latitude.toString());
+                const longitude = parseFloat(event.longitude.toString());
 
-const lightStyles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        paddingHorizontal: 10,
-        paddingTop: 50,
-    },
-    listContent: {
-        paddingVertical: 10,
-    },
-    eventCard: {
-        backgroundColor: '#f9f9f9',
-        padding: 20, // Ingrandito
-        marginVertical: 5, // Spaziatura tra elementi aumentata
-        borderRadius: 15,
-        borderColor: '#ddd',
-        borderWidth: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        height: 85, // Fissa l'altezza della card
-    },
-    eventName: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
-    },
-    eventDetails: {
-        marginTop: 3,
-        fontSize: 14,
-        color: '#666',
-    },
-    eventImage: {
-        width: 40, // Dimensione icona
-        height: 40,
-        resizeMode: 'contain',
-    },
-    emptyText: {
-        textAlign: 'center',
-        color: '#666',
-        marginTop: 20,
-        fontSize: 16,
-    },
-});
+                if (!isNaN(latitude) && !isNaN(longitude)) {
+                  return (
+                    <Marker
+                      key={index}
+                      coordinate={{
+                        latitude,
+                        longitude,
+                      }}
+                      onPress={() => handleMarkerPress(event)}
+                    />
+                  );
+                } else {
+                  console.warn(`Invalid coordinates for event: ${event.name}`, event);
+                  return null;
+                }
+              }) : <View style={styles.loadingContainer}><ActivityIndicator size="large" animating={false} color={isDarkMode ? '#fff' : '#000'} /></View>}
 
-// Stili per Modalità Dark
-const darkStyles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#121212',
-        paddingHorizontal: 10,
-        paddingTop: 50,
-    },
-    listContent: {
-        paddingVertical: 10,
-    },
-    eventCard: {
-        backgroundColor: '#1E1E1E',
-        padding: 20, // Ingrandito
-        marginVertical: 5, // Spaziatura tra elementi aumentata
-        borderRadius: 15,
-        borderColor: '#333',
-        borderWidth: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        height: 85,
-    },
-    eventName: {
-        fontSize: 18, // Ingrandito
-        fontWeight: 'bold',
-        color: '#fff',
-    },
-    eventDetails: {
-        fontSize: 14,
-        color: '#bbb',
-        marginTop: 3,
-    },
-    eventImage: {
-        width: 80, // Dimensione icona
-        height: 70,
-        resizeMode: 'contain',
-    },
-    emptyText: {
-        textAlign: 'center',
-        color: '#bbb',
-        marginTop: 20,
-        fontSize: 16,
-    },
-});
+            </MapViewCluster>
+          )}
+        </View>
+      )}
+
+      {/* Render del pop-up */}
+      {selectedEvent && (
+        <EventDetailsPopup
+          visible={isPopupVisible}
+          onClose={handleClosePopup}
+          onDetails={() => {
+            router.push(`/eventPageDetails?eventId=${selectedEvent.name}`);
+            console.log('Navigate to details for', selectedEvent);
+            setIsPopupVisible(false);
+          }}
+          event={selectedEvent}
+        />
+      )}
+    </View>
+  );
+};
+
+export default TabThreeScreen;

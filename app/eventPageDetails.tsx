@@ -1,12 +1,12 @@
 import { Link, Stack } from 'expo-router';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, useColorScheme, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, useColorScheme, Alert, Linking, Platform } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Event } from '@/components/models/event';
 import { useSearchParams } from 'expo-router/build/hooks';
 import { useAppContext } from './_layout';
-import { Button } from 'react-native';
+import { Icon } from 'react-native-elements';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { formatDateTime } from '@/hooks/dateFormat';
 
@@ -16,13 +16,182 @@ export default function EventDetailsScreen() {
   const eventId: string = searchParams.get('eventId')!;
   const allEvents = useAppContext().allEvents;
   const user = useAppContext().user;
-  const myEvents = useAppContext().myEvents;
-  const [event, setEvent] = React.useState<Event | null>(null);
+  const {myEvents, setMyEvents} = useAppContext();
+  const [images, setImages] = useState<any[]>([]);
+  const [event, setEvent] = useState<Event | null>(null);
+  const db = useAppContext().db;
   const e: Event = allEvents.find((e) => e.name === eventId)!;
-  React.useEffect(() => {
+  console.log(myEvents);
+
+  useEffect(() => {
+    var i;
     if (e) {
-      setEvent(e);  //event. -> tutte le cose dell'evento
-      console.log(e);
+      setEvent(e);
+      console.log(`Loading images for event: ${e.name}`);
+      switch (e.name) {
+        case 'Polito Party':
+          i = [
+            require('@/assets/images/events/Polito Party/img1.jpg'),
+            require('@/assets/images/events/Polito Party/img2.jpg'),
+            require('@/assets/images/events/Polito Party/img3.jpg'),
+          ];
+          break;
+        case 'Boat trip':
+          i = [
+            require('@/assets/images/events/Boat Trip/img1.jpg'),
+            require('@/assets/images/events/Boat Trip/img2.jpg'),
+            require('@/assets/images/events/Boat Trip/img3.jpg'),
+          ];
+          break;
+        case 'Karaoke':
+          i = [
+            require('@/assets/images/events/Karaoke Night/img1.jpg'),
+            require('@/assets/images/events/Karaoke Night/img2.jpg'),
+            require('@/assets/images/events/Karaoke Night/img3.jpg'),
+          ];
+          break;
+        case 'Art Exhibition':
+          i = [
+            require('@/assets/images/events/Art Exhibition/img1.jpg'),
+            require('@/assets/images/events/Art Exhibition/img2.jpg'),
+            require('@/assets/images/events/Art Exhibition/img3.jpg'),
+          ];
+          break;
+        case 'Art Show':
+          i = [
+            require('@/assets/images/events/Art Show/img1.jpg'),
+            require('@/assets/images/events/Art Show/img2.jpg'),
+            require('@/assets/images/events/Art Show/img3.jpg'),
+          ];
+          break;
+        case 'Bari Food Festival':
+          i = [
+            require('@/assets/images/events/Bari Food Festival/img1.jpg'),
+            require('@/assets/images/events/Bari Food Festival/img2.jpg'),
+            require('@/assets/images/events/Bari Food Festival/img3.jpg'),
+          ];
+          break;
+        case 'Bari Jazz Festival':
+          i = [
+            require('@/assets/images/events/Bari Jazz Festival/img1.jpg'),
+            require('@/assets/images/events/Bari Jazz Festival/img2.jpg'),
+            require('@/assets/images/events/Bari Jazz Festival/img3.jpg'),
+          ];
+          break;
+        case 'Bari Marathon':
+          i = [
+            require('@/assets/images/events/Bari Marathon/img1.jpg'),
+            require('@/assets/images/events/Bari Marathon/img2.jpg'),
+            require('@/assets/images/events/Bari Marathon/img3.jpg'),
+          ];
+          break;
+        case 'Beach Party':
+          i = [
+            require('@/assets/images/events/Beach Party/img1.jpg'),
+            require('@/assets/images/events/Beach Party/img2.jpg'),
+            require('@/assets/images/events/Beach Party/img3.jpg'),
+          ];
+          break;
+        case 'Boat Trip':
+          i = [
+            require('@/assets/images/events/Boat Trip/img1.jpg'),
+            require('@/assets/images/events/Boat Trip/img2.jpg'),
+            require('@/assets/images/events/Boat Trip/img3.jpg'),
+          ];
+          break;
+        case 'Charity Run':
+          i = [
+            require('@/assets/images/events/Charity Run/img1.jpg'),
+            require('@/assets/images/events/Charity Run/img2.jpg'),
+            require('@/assets/images/events/Charity Run/img3.jpg'),
+          ];
+          break;
+        case 'Craft Workshop':
+          i = [
+            require('@/assets/images/events/Craft Workshop/img1.jpg'),
+            require('@/assets/images/events/Craft Workshop/img2.jpg'),
+            require('@/assets/images/events/Craft Workshop/img3.jpg'),
+          ];
+          break;
+        case 'Film Screening':
+          i = [
+            require('@/assets/images/events/Film Screening/img1.jpg'),
+            require('@/assets/images/events/Film Screening/img2.jpg'),
+            require('@/assets/images/events/Film Screening/img3.jpg'),
+          ];
+          break;
+        case 'Jazz Night':
+          i = [
+            require('@/assets/images/events/Jazz Night/img1.jpg'),
+            require('@/assets/images/events/Jazz Night/img2.jpg'),
+            require('@/assets/images/events/Jazz Night/img3.jpg'),
+          ];
+          break;
+        case 'Karaoke Night':
+          i = [
+            require('@/assets/images/events/Karaoke Night/img1.jpg'),
+            require('@/assets/images/events/Karaoke Night/img2.jpg'),
+            require('@/assets/images/events/Karaoke Night/img3.jpg'),
+          ];
+          break;
+        case 'Meditation Day':
+          i = [
+            require('@/assets/images/events/Meditation Retreat/img1.jpg'),
+            require('@/assets/images/events/Meditation Retreat/img2.jpg'),
+            require('@/assets/images/events/Meditation Retreat/img3.jpg'),
+          ];
+          break;
+        case 'Outdoor Yoga':
+          i = [
+            require('@/assets/images/events/Outdoor Yoga/img1.jpg'),
+            require('@/assets/images/events/Outdoor Yoga/img2.jpg'),
+            require('@/assets/images/events/Outdoor Yoga/img3.jpg'),
+          ];
+          break;
+        case 'Photo Workshop': 
+          i = [
+            require('@/assets/images/events/Photo Workshop/img1.jpg'),
+            require('@/assets/images/events/Photo Workshop/img2.jpg'),
+            require('@/assets/images/events/Photo Workshop/img3.jpg'),
+          ];
+          break;
+        case 'Rock Concert':
+          i = [
+            require('@/assets/images/events/Rock Concert/img1.jpg'),
+            require('@/assets/images/events/Rock Concert/img2.jpg'),
+            require('@/assets/images/events/Rock Concert/img3.jpg'),
+          ];
+          break;
+        case 'Tech Talk':
+          i = [
+            require('@/assets/images/events/Tech Talk/img1.jpg'),
+            require('@/assets/images/events/Tech Talk/img2.jpg'),
+            require('@/assets/images/events/Tech Talk/img3.jpg'),
+          ];
+          break;
+        case 'Theater Play':
+          i = [
+            require('@/assets/images/events/Theater Play/img1.jpg'),
+            require('@/assets/images/events/Theater Play/img2.jpg'),
+            require('@/assets/images/events/Theater Play/img3.jpg'),
+          ];
+          break;
+        case 'Wine Tasting':
+          i = [
+            require('@/assets/images/events/Wine Tasting/img1.jpg'),
+            require('@/assets/images/events/Wine Tasting/img2.jpg'),
+            require('@/assets/images/events/Wine Tasting/img3.jpg'),
+          ];
+          break;
+        default:
+          i = [
+            require('@/assets/images/events/Polito Party/img1.jpg'),
+            require('@/assets/images/events/Polito Party/img2.jpg'),
+            require('@/assets/images/events/Polito Party/img3.jpg'),
+          ];
+          console.log('Event not found');
+      }
+      setImages(i);
     }
   }, [e]);
 
@@ -38,11 +207,6 @@ export default function EventDetailsScreen() {
     buttonText: isDarkMode ? '#FFFFFF' : '#000000',
   }
 
-  const images = [
-    require('@/assets/images/event1/event1_1.jpg'),
-    require('@/assets/images/event1/event1_2.webp'),
-    require('@/assets/images/event1/event1_3.jpg'),
-  ];
 
   const handleNext = () => {
     setCurrentImageIndex((prevIndex) => (prevIndex < images.length - 1 ? prevIndex + 1 : 0));
@@ -134,25 +298,56 @@ export default function EventDetailsScreen() {
       flexDirection: 'column',
       justifyContent: 'space-between',
     },
-    taralloIcon: {
-      width: 60,
-      height: 65,
+    mapsIcon: {
+      width: 35,
+      height: 50,
+      //marginBottom: 10,
+    },
+    dotContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      position: 'absolute',
+      bottom: 15,
+    },
+    dot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      marginHorizontal: 5,
+    },
+    dotActive: {
+      backgroundColor: '#FFFFFF',
+    },
+    dotInactive: {
+      backgroundColor: '#A9A9A9',
     },
   });
 
   const handleJoinLeaveEvent = () => {
+    if (!user) return;
+  
     if (myEvents.includes(eventId)) {
       // Alert per confermare l'abbandono dell'evento
       Alert.alert(
         'Event Status',
         'Are you sure you want to leave the event?',
         [
-          { text: 'Cancel'},
+          { text: 'Cancel' },
           {
             text: 'Yes',
-            onPress: () => {
-              console.log('Event abandoned');
-              // Aggiorna stato in db
+            onPress: async () => {
+              try {
+                await db.runAsync(
+                  'DELETE FROM users_events WHERE user = ? AND event = ?',
+                  [user.username, eventId]
+                );
+                console.log('Event left successfully');
+                // Aggiorna lo stato locale
+                setMyEvents(myEvents.filter(e => e !== eventId));
+              } catch (error) {
+                console.error('Error leaving event:', error);
+              }
             },
           },
         ]
@@ -166,9 +361,18 @@ export default function EventDetailsScreen() {
           { text: 'Cancel' },
           {
             text: 'Yes',
-            onPress: () => {
-              console.log('Event joined');
-              // Aggiorna stato in db
+            onPress: async () => {
+              try {
+                await db.runAsync(
+                  'INSERT INTO users_events (user, event) VALUES (?, ?)',
+                  [user.username, eventId]
+                );
+                console.log('Event joined successfully');
+                // Aggiorna lo stato local
+                setMyEvents([...myEvents, eventId]);
+              } catch (error) {
+                console.error('Error joining event:', error);
+              }
             },
           },
         ]
@@ -205,7 +409,7 @@ export default function EventDetailsScreen() {
                 )}
                 <View style={styles.row}>
                   <IconSymbol name="clock" size={20} color={colors.text} />
-                  <Text style={styles.rowText}>{formatDateTime(event.date)}</Text>
+                  <Text style={styles.rowText}>{formatDateTime(new Date(event.date))}</Text>
                 </View>
                 <View style={styles.row}>
                   <IconSymbol name="location" size={20} color={colors.text} />
@@ -231,30 +435,40 @@ export default function EventDetailsScreen() {
 
               {/* Status Card */}
               <TouchableOpacity onPress={handleJoinLeaveEvent}>
-                <View style={[styles.card, { padding: 15, marginLeft: 8 }]}>
-                  <View style={{ alignItems: 'center' }}>
-                    <IconSymbol name={myEvents.includes(eventId) ? 'person.badge.minus' : 'person.badge.plus'}
+                <View style={[styles.card, { padding: 18, marginLeft: 8 }]}>
+                    <View style={{ alignItems: 'center' }}>
+                    {Platform.OS === 'ios' ? (
+                      <IconSymbol name={myEvents.includes(eventId) ? 'person.badge.minus' : 'person.badge.plus'}
                       size={65}
-                      color={myEvents.includes(eventId) ? 'red' : 'green'}
-                    />
-                    <Text style={{ fontSize: 15, color: myEvents.includes(eventId) ? 'red' : 'green' }}>
+                      color={myEvents.includes(eventId) ? 'red' : '#007AFF'}
+                      />
+                    ) : (
+                      <Icon name={myEvents.includes(eventId) ? 'user-minus' : 'user-plus'}
+                      type="font-awesome-5"
+                      size={65}
+                      color={myEvents.includes(eventId) ? 'red' : '#007AFF'}
+                      />
+                    )}
+                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: myEvents.includes(eventId) ? 'red' : '#007AFF' }}>
                       {myEvents.includes(eventId) ? 'Leave' : 'Join'}
                     </Text>
-                  </View>
+                    </View>
                 </View>
               </TouchableOpacity>
 
-              {/* Taralli Card */}
-              <View style={[styles.card, { padding: 15, marginLeft: 8 }]}>
-                <View style={{ alignItems: 'center' }}>
+              {/* Maps Card */}
+              <TouchableOpacity onPress={() => Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${event.latitude},${event.longitude}`)}>
+              <View style={[styles.card, { alignContent:'center', alignItems:'center', justifyContent:'space-between', padding: 15, marginLeft: 8 }]}>
+                
                   <Image
-                    source={require('@/assets/images/tarallo.png')}
-                    style={[styles.taralloIcon, { tintColor: colors.text }]}
+                    source={require('@/assets/images/maps2.png')}
+                    style={styles.mapsIcon}
                   />
-                  <Text style={{ fontSize: 15, color: colors.text }}> 10 Taralli</Text>
-                </View>
+                  <Text style={{ textAlign:'center', fontSize: 15, color: colors.text }}> Google Maps</Text>              
               </View>
+              </TouchableOpacity>
             </View>
+   
 
           </View>
 
@@ -276,20 +490,27 @@ export default function EventDetailsScreen() {
               >
                 <IconSymbol name="chevron.forward" size={24} color={'white'} />
               </TouchableOpacity>
+              {/* Aggiungi i pallini sovrapposti */}
+              <View style={styles.dotContainer}>
+                {images.map((_, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.dot,
+                      currentImageIndex === index ? styles.dotActive : styles.dotInactive,
+                    ]}
+                  />
+                ))}
+              </View>
             </View>
           </View>
 
 
           {/* Descrizione dell'evento */}
           <View style={[styles.card, { padding: 15 }]}>
-            <Text style={styles.cardTitle}>Desription</Text>
+            <Text style={styles.cardTitle}>Description</Text>
             <Text style={styles.cardContent}>
-              Questa descrizione è solo un esempio. Deve esssere inserita una descrizione nel database.
-              Descrizione esempio, descrizione esempio, esempio, esempio. Esempio ewufwehbfeuhfbwejhbfhweefj
-              Questa descrizione è solo un esempio. Deve esssere inserita una descrizione nel database.
-              Descrizione esempio, descrizione esempio, esempio, esempio. Esempio ewufwehbfeuhfbwejhbfhweefj
-              Questa descrizione è solo un esempio. Deve esssere inserita una descrizione nel database.
-              Descrizione esempio, descrizione esempio, esempio, esempio. Esempio ewufwehbfeuhfbwejhbfhweefj
+              {event.description}
             </Text>
           </View>
         </ScrollView>

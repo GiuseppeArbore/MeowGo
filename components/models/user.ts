@@ -21,6 +21,5 @@ export class User {
     setLocalLegendFor(local_legend_for: string[]) {
         this.local_legend_for = local_legend_for;
     }
-
-
+      
 }

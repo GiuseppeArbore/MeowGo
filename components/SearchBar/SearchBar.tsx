@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React, {useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, useColorScheme, Modal, Platform } from 'react-native';
-import { Link, useNavigation } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import { useAppContext } from '@/app/_layout';
+import { Filters, useAppContext } from '@/app/_layout';
 import { formatDateTime } from '@/hooks/dateFormat';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 
-export function SearchBar() {
-    const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-    const { searchFilters, setSearchFilters } = useAppContext();
-    const navigation = useNavigation();
+//props per la funzione SearchBar
+
+type Props = {
+    setShowedEvents: any;
+    filters: Filters;
+};
+
+export const SearchBar: React.FC<Props> = ({ setShowedEvents, filters }) => {
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(true);
+    const { searchFilters, setSearchFilters, allEvents, myEvents } = useAppContext();
     const [searchFiltersTemp, setSearchFiltersTemp] = useState({ ...searchFilters });
     const [showPickerAvailableCities, setShowPickerAvailableCities] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -18,13 +23,41 @@ export function SearchBar() {
     const colorScheme = useColorScheme();
     const isDarkMode = colorScheme === 'dark';
 
+
     const colors = {
         background: isDarkMode ? '#1C1C1C' : '#FFFFFF',
         text: isDarkMode ? '#FFFFFF' : '#000000',
         inputBackground: isDarkMode ? '#2E2E2E' : '#F5F5F5',
         buttonBackground: isDarkMode ? '#2E2E2E' : '#E0E0E0',
         buttonText: isDarkMode ? '#FFFFFF' : '#000000',
-      };
+    };
+
+    const handleCityChange = (cityValue: any) => {
+        setSearchFiltersTemp({ ...searchFiltersTemp, city: cityValue });
+    };
+
+    const applyFilters = async () => {
+        const showed = allEvents.filter(event => {
+            return (
+                (
+                    event.city == searchFilters.city &&
+                    (searchFilters.date || new Date(event.date) > new Date(searchFilters.date as string))
+                ) &&
+                (
+                    (
+                        (!filters.localLegend || event.local_legend_here) &&
+                        (filters.maxPeople == 1 || event.max_people <= filters.maxPeople) &&
+                        (!filters.eventType || event.type === filters.eventType) &&
+                        (!filters.location || event.place.toLowerCase() === filters.location.toLowerCase())
+                    )
+                ) &&
+                (
+                    ! myEvents.includes(event.name)
+                )
+            );
+        });
+        setShowedEvents(showed);
+    }
 
     const styles = StyleSheet.create({
         fakeSearchBar: {
@@ -165,9 +198,10 @@ export function SearchBar() {
         setIsModalVisible(false);
     };
 
-    const handleApply = () => {
-        console.log('Search done');
+    const handleApply = async () => {
+        console.log(searchFiltersTemp);
         setSearchFilters(searchFiltersTemp);
+        await applyFilters();
         setIsModalVisible(false);
     };
 
@@ -177,7 +211,7 @@ export function SearchBar() {
                 <TouchableOpacity style={styles.fakeSearchBar} onPress={() => setIsModalVisible(true)}>
                     <Text style={styles.cityText}>{searchFilters.city}</Text>
                     <Text style={styles.dateTimeText}>
-                        {formatDateTime(searchFilters.date)}
+                        {formatDateTime(new Date(searchFilters.date))}
                     </Text>
                     <IconSymbol size={20} name="magnifyingglass" color={isDarkMode ? '#FFF' : '#000'} />
                 </TouchableOpacity>
@@ -209,9 +243,8 @@ export function SearchBar() {
                             {((showPickerAvailableCities && Platform.OS === 'ios') || Platform.OS === 'android') &&
                                 <Picker
                                     selectedValue={searchFiltersTemp.city}
-                                    onValueChange={(cityValue) => setSearchFiltersTemp({ ...searchFiltersTemp, city: cityValue })}
+                                    onValueChange={handleCityChange}
                                 >
-                                    <Picker.Item label="All cities" value="All cities" />
                                     <Picker.Item label="Turin" value="Turin" />
                                     <Picker.Item label="Bari" value="Bari" />
                                 </Picker>
@@ -226,7 +259,7 @@ export function SearchBar() {
                                     onPress={toggleDatePicker}
                                 >
                                     <Text style={styles.searchLabel}>
-                                        {searchFiltersTemp.date.toLocaleDateString()}
+                                        {`Starting from ${new Date(searchFiltersTemp.date).toLocaleDateString()}`}
                                     </Text>
                                     <IconSymbol size={20} name="calendar" color={colorScheme === 'dark' ? '#FFF' : '#000'} />
                                 </TouchableOpacity>
@@ -234,15 +267,14 @@ export function SearchBar() {
 
                             {showDatePicker && (
                                 <DateTimePicker
-                                    value={searchFiltersTemp.date}
+                                    value={new Date(searchFiltersTemp.date)}
                                     mode="date"
                                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                                     onChange={(event, date) => {
                                         if (Platform.OS === 'android') setShowDatePicker(false)
-                                        if (date) setSearchFiltersTemp({ ...searchFiltersTemp, date: date });
+                                        if (date) setSearchFiltersTemp({ ...searchFiltersTemp, date: date.toISOString() });
                                     }}
-                                />
-                            )}
+                                />)}
                         </View>
 
                         {/* Time Picker */}
@@ -253,19 +285,19 @@ export function SearchBar() {
                                     onPress={toggleTimePicker}
                                 >
                                     <Text style={styles.searchLabel}>
-                                        {searchFiltersTemp.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        {new Date(searchFiltersTemp.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </Text>
                                     <IconSymbol size={20} name="clock" color={colorScheme === 'dark' ? '#FFF' : '#000'} />
                                 </TouchableOpacity>
                             </View>
                             {showTimePicker && (
                                 <DateTimePicker
-                                    value={searchFiltersTemp.date}
+                                    value={new Date(searchFiltersTemp.date)}
                                     mode="time"
                                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                                     onChange={(event, time) => {
                                         if (Platform.OS === 'android') setShowTimePicker(false);
-                                        if (time) setSearchFiltersTemp({ ...searchFiltersTemp, date: time });
+                                        if (time) setSearchFiltersTemp({ ...searchFiltersTemp, date: time.toISOString() });
                                     }}
                                 />
                             )}
